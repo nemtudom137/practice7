@@ -1,5 +1,4 @@
-using System.Diagnostics;
-using System.Text.RegularExpressions;
+using System.Collections.ObjectModel;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Interactions;
@@ -18,7 +17,7 @@ public class SimpleTests
     private static readonly object[] GlobalSearch =
     [
        "BLOCKCHAIN",
-       "RPA"
+       "Cloud"
     ];
 
     private readonly string url = "https://www.epam.com/";
@@ -28,103 +27,103 @@ public class SimpleTests
     [SetUp]
     public void Setup()
     {
-        Trace.Listeners.Add(new ConsoleTraceListener());
-        this.driver = new ChromeDriver();
+        driver = new ChromeDriver();
 
-        this.explicitWait = new WebDriverWait(this.driver, TimeSpan.FromSeconds(10))
+        explicitWait = new WebDriverWait(driver, TimeSpan.FromSeconds(10))
         {
             PollingInterval = TimeSpan.FromMilliseconds(500),
         };
 
-        this.explicitWait.IgnoreExceptionTypes(typeof(ElementClickInterceptedException), typeof(ElementNotInteractableException), typeof(StaleElementReferenceException));
+        explicitWait.IgnoreExceptionTypes(typeof(ElementClickInterceptedException), typeof(ElementNotInteractableException), typeof(StaleElementReferenceException));
 
-        this.driver.Manage().Window.Maximize();
-        this.driver.Navigate().GoToUrl(this.url);
-        this.AcceptCookies();
+        driver.Manage().Window.Maximize();
+        driver.Navigate().GoToUrl(url);
+        ClickOnElement(By.XPath("//button[text()='Accept All']"));
     }
 
     [TearDown]
     public void TearDown()
     {
-        this.driver.Quit();
-        this.driver?.Dispose();
-        Trace.Flush();
+        driver.Quit();
+        driver?.Dispose();
     }
 
     [Test]
     [TestCaseSource(nameof(CarrierSearch))]
     public void CarrierSearchResult_ContainsLanguage(string language, string location, string city)
     {
-        this.driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(10);
-        var carriersLink = this.driver.FindElement(By.LinkText("Careers"));
+        var carriersLink = driver.FindElement(By.LinkText("Careers"));
         carriersLink.Click();
 
-        var searchForm = this.driver.FindElement(By.Id("jobSearchFilterForm"));
-
-        var keyword = searchForm.FindElement(By.Id("new_form_job_search-keyword"));
+        var keyword = WaitForDisplayElement(By.CssSelector("input#new_form_job_search-keyword"));
         keyword.SendKeys(language);
 
-        var locations = searchForm.FindElement(By.ClassName("recruiting-search__location"));
+        var locations = driver.FindElement(By.CssSelector(".recruiting-search__location span[role='combobox']"));
         locations.Click();
 
         if (string.IsNullOrEmpty(city))
         {
-            locations.FindElement(By.XPath($"//li[contains(text(),'{location}')]")).Click();
+            ClickOnElement(By.XPath($"//li[contains(text(),'{location}')]"));
         }
         else
         {
-            locations.FindElement(By.XPath($"//strong[contains(text(),'{location}')]")).Click();
-            locations.FindElement(By.XPath($"//li[contains(text(),'{city}')]")).Click();
+            ClickOnElement(By.XPath($"//strong[contains(text(),'{location}')]"));
+            ClickOnElement(By.XPath($"//li[contains(text(),'{city}')]"));
         }
 
-        var remoteOption = searchForm.FindElement(By.Name("remote"));
+        var remoteOption = driver.FindElement(By.CssSelector(".job-search__filter-list input[name='remote']"));
 
-        new Actions(this.driver)
+        new Actions(driver)
             .MoveToElement(remoteOption)
             .Click()
             .Perform();
 
-        var findButton = searchForm.FindElement(By.TagName("button"));
+        var findButton = driver.FindElement(By.CssSelector("button[type='submit']"));
         findButton.Click();
 
-        var sortByDate = this.driver.FindElement(By.CssSelector("#sort-time ~ label"));
+        var sortByDate = WaitForDisplayElement(By.CssSelector("#sort-time ~ label"));
         sortByDate.Click();
 
-        var applyButtons = this.driver.FindElements(By.LinkText("VIEW AND APPLY"));
-        applyButtons[0].Click();
+        var applyButton = WaitForDisplayElement(By.XPath("//ul[@class='search-result__list']/li[last()]//a[contains(text(),'apply')]"));
+        applyButton.Click();
 
-        this.driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(0);
-        var result = this.explicitWait.Until(d =>
-            d.FindElements(By.CssSelector("header h1, div.vacancy_content :is(h1, h2, h3, h4, p, li)"))
-            .Any(x => Regex.IsMatch(x.Text, $"\\b{language}\\b", RegexOptions.IgnoreCase)));
+        int result;
 
-        Assert.That(result, Is.True);
+        try
+        {
+            result = WaitForAllElements(By.XPath($"//article//*[contains(text(),'{language}')]")).Count;
+        }
+        catch (WebDriverTimeoutException)
+        {
+            result = 0;
+        }
+
+        Assert.That(result, Is.GreaterThan(0));
     }
 
     [Test]
     [TestCaseSource(nameof(GlobalSearch))]
-    public void GlobalSearchResult_ContainsKeyword(string searchString)
+    public void GlobalSearchFirstResults_ContainKeyword(string searchString)
     {
-        var magnifierIcon = this.driver.FindElement(By.ClassName("search-icon"));
+        var magnifierIcon = driver.FindElement(By.XPath("//button[contains(@class,'header-search')]"));
         magnifierIcon.Click();
 
-        var searchPanel = this.WaitForDisplayElement(By.ClassName("header-search__panel"));
-        var searchInput = this.WaitForDisplayElement(By.Id("new_form_search"));
+        var searchInput = WaitForDisplayElement(By.CssSelector("input#new_form_search"));
         searchInput.SendKeys(searchString);
 
-        var findButton = searchPanel.FindElement(By.XPath(".//*[@class='search-results__input-holder']/following-sibling::button"));
+        var findButton = driver.FindElement(By.XPath("//div[contains(@class,'search-results__input-holder')]/following-sibling::button"));
         findButton.Click();
 
-        var result = this.GetAllSearchResults().All(x => x.Contains(searchString, StringComparison.InvariantCultureIgnoreCase));
+        var results = WaitForAllElements(By.XPath("//article[@class='search-results__item']")).Select(x => x.Text);
 
-        Assert.That(result, Is.True);
+        Assert.That(results.All(x => x.Contains(searchString, StringComparison.InvariantCultureIgnoreCase)), Is.True);
     }
 
-    private void AcceptCookies()
+    private void ClickOnElement(By by)
     {
-        this.explicitWait.Until(driver =>
+        explicitWait.Until(d =>
         {
-            var acceptButton = driver.FindElement(By.Id("onetrust-accept-btn-handler"));
+            var acceptButton = d.FindElement(by);
             acceptButton.Click();
             return true;
         });
@@ -132,10 +131,10 @@ public class SimpleTests
 
     private IWebElement WaitForDisplayElement(By by)
     {
-        return this.explicitWait.Until(d =>
+        return explicitWait.Until(d =>
         {
             var element = d.FindElement(by);
-            if (element.Displayed)
+            if (element != null && element.Displayed && element.Enabled)
             {
                 return element;
             }
@@ -144,69 +143,17 @@ public class SimpleTests
         });
     }
 
-    private void ScrollDownSearchResults(By resultElements)
+    private ReadOnlyCollection<IWebElement> WaitForAllElements(By by)
     {
-        var action = new Actions(this.driver);
-
-        int totalCount = 0;
-        int currentCount = 0;
-
-        do
+        return explicitWait.Until(d =>
         {
-            totalCount = currentCount;
-
-            action.Pause(TimeSpan.FromSeconds(1))
-                .KeyDown(Keys.Control)
-                .SendKeys(Keys.End)
-                .KeyUp(Keys.Control)
-                .Perform();
-
-            this.explicitWait.Until(d =>
+            var elements = d.FindElements(by);
+            if (elements.Count > 0 && elements.All(x => x.Enabled))
             {
-                var n = d.FindElements(resultElements).Count;
-                if (n > currentCount)
-                {
-                    currentCount = n;
-                    return false;
-                }
-                else
-                {
-                    return true;
-                }
-            });
-        }
-        while (totalCount > currentCount);
-    }
-
-    private List<string> GetAllSearchResults()
-    {
-        var action = new Actions(this.driver);
-
-        var resultLocator = By.XPath("//article[@class='search-results__item']");
-        var viewMoreButtonLocator = By.ClassName("search-results__view-more");
-
-        while (true)
-        {
-            this.ScrollDownSearchResults(resultLocator);
-
-            var button = this.explicitWait.Until(d => d.FindElement(viewMoreButtonLocator));
-            try
-            {
-                action
-                .ScrollToElement(button)
-                .Pause(TimeSpan.FromSeconds(1))
-                .MoveToElement(button)
-                .Click()
-                .Perform();
+                return elements;
             }
-            catch (ElementNotInteractableException)
-            {
-                break;
-            }
-        }
 
-        var results = this.driver.FindElements(resultLocator).Select(x => x.Text).ToList();
-        Debug.WriteLine(results.Count);
-        return results;
+            return null;
+        });
     }
 }

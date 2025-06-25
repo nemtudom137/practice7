@@ -1,0 +1,57 @@
+﻿using OpenQA.Selenium;
+using OpenQA.Selenium.Interactions;
+
+namespace WebApp.Pages;
+
+public class CareersPage : BasePage
+{
+    protected readonly By keyword = By.CssSelector("input#new_form_job_search-keyword");
+    protected readonly By locations = By.CssSelector(".recruiting-search__location span[role='combobox']");
+    protected readonly By remoteOption = By.CssSelector(".job-search__filter-list input[name='remote']");
+    protected readonly By findButton = By.CssSelector("button[type='submit']");
+    protected static By GetLocationOption(string location) => By.XPath($"//li[contains(text(),'{location}')]");
+    protected static By GetLocationOptionGroup(string location) => By.XPath($"//strong[contains(text(),'{location}')]");
+
+    internal CareersPage(IWebDriver driver) : base(driver, TimeSpan.FromSeconds(2))
+    {
+    }
+
+    public CareersPage SetSearchTerms(string searchTerms)
+    {
+        Driver.FindElement(keyword).SendKeys(searchTerms);
+        return this;
+    }
+
+    public CareersPage SetLocation(string location, string city)
+    {
+        Driver.FindElement(locations).Click();
+        if (string.IsNullOrEmpty(city))
+        {
+            Wait.ClickOnElement(GetLocationOption(location));
+        }
+        else
+        {
+            Wait.ClickOnElement(GetLocationOptionGroup(location));
+            Wait.ClickOnElement(GetLocationOption(city));
+        }
+
+        return this;
+    }
+
+    public CareersPage ChooseRemote()
+    {
+        var remote = Driver.FindElement(remoteOption);
+        new Actions(Driver)
+           .MoveToElement(remote)
+           .Click()
+           .Perform();
+
+        return this;
+    }
+
+    public JobListings ClickOnFind()
+    {
+        Driver.FindElement(findButton).Click();
+        return new JobListings(Driver);
+    }
+}

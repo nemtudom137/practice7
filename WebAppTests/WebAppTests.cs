@@ -2,20 +2,20 @@ using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using WebApp.Pages;
 
-namespace WebDriverTask;
+namespace WebAppTests;
 
 public class WebAppTests
 {
     private static readonly object[][] CarrierSearch =
-   [
-       ["C", "All Locations", string.Empty],
+    [
+        ["C", "All Locations", string.Empty],
         ["Java", "Japan", "Tokyo"]
-   ];
+    ];
 
     private static readonly object[] GlobalSearch =
     [
        "BLOCKCHAIN",
-       "Cloud"
+       "RPA"
     ];
 
     private static readonly object[] SwipeTimes = [0, 2, 7];
@@ -43,8 +43,6 @@ public class WebAppTests
     public void TearDown()
     {
         driver.Quit();
-        driver?.Dispose();
-
         Directory.Delete(downloadDirectory, true);
     }
 
@@ -81,12 +79,13 @@ public class WebAppTests
             .ClickOnFind()
             .GetSearchResults();
 
+        Console.WriteLine(results.Count);
         Assert.That(results.All(x => x.Contains(searchString, StringComparison.InvariantCultureIgnoreCase)), Is.True);
     }
 
     [Test]
     [TestCase("EPAM_Corporate_Overview_Q4FY-2024.pdf")]
-    public void DownloadNemtudom(string expectedFileName)
+    public void DownloadOnAboutPage_GivesFileWithCorrectName(string expectedFileName)
     {
         var header = new HomePage(driver)
             .AcceptCookies()
@@ -104,7 +103,7 @@ public class WebAppTests
 
     [Test]
     [TestCaseSource(nameof(SwipeTimes))]
-    public void NemTudom(int times)
+    public void CarouselOnInsightsPage_RedirectToArticleWithCorrectName(int times)
     {
         var header = new HomePage(driver)
             .AcceptCookies()

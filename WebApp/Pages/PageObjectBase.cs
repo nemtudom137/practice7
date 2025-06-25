@@ -10,9 +10,9 @@ public abstract class PageObjectBase
     protected PageObjectBase(IWebDriver driver, TimeSpan timeout)
     {
         Driver = driver ?? throw new ArgumentNullException(nameof(driver));
-        Wait = new WaitHelper(Driver, timeout);
+        WaitHelp = new WaitHelper(Driver, timeout);
     }
 
     protected IWebDriver Driver { get; init; }
-    protected WaitHelper Wait { get; init; }
+    protected WaitHelper WaitHelp { get; init; }
 }

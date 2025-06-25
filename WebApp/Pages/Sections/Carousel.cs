@@ -5,11 +5,11 @@ namespace WebApp.Pages.Sections;
 
 public class Carousel : PageObjectBase
 {
+    private readonly string root;
     private By RightArrow => By.XPath($"{root}//button[contains(@class,'slider__right-arrow')]");
     private By ActiveSlideText => By.XPath($"{root}//div[@aria-hidden='false']//div[@class ='text']");
     private By ActiveSlideContetnLink => By.XPath($"{root}//div[@aria-hidden='false']//a");
-    private readonly string root;
-
+   
     internal Carousel(IWebDriver driver, string root) : base(driver)
     {
         this.root = root;
@@ -18,7 +18,7 @@ public class Carousel : PageObjectBase
     public Carousel Swipe(int time)
     {
         ArgumentOutOfRangeException.ThrowIfNegative(time);
-        var arrow = Wait.WaitForDisplayElement(RightArrow);
+        var arrow = WaitHelp.WaitForDisplayElement(RightArrow);
         for (int i = 0; i < time; i++)
         {
             new Actions(Driver).MoveToElement(arrow)
@@ -30,11 +30,11 @@ public class Carousel : PageObjectBase
         return this;
     }
 
-    public string GetActivArticleTitle() => new WaitHelper(Driver, TimeSpan.FromSeconds(2)).WaitForDisplayElement(ActiveSlideText).Text;
+    public string GetActivArticleTitle() => WaitHelp.WaitForDisplayElement(ActiveSlideText).Text;
 
     public ArticlePage ClickOnReadMore()
     {
-        Wait.ClickOnElement(ActiveSlideContetnLink);
+        WaitHelp.ClickOnElement(ActiveSlideContetnLink);
         return new ArticlePage(Driver);
     }
 }

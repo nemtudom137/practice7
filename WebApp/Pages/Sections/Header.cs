@@ -41,7 +41,7 @@ public class Header : PageObjectBase
 
     public Header SetSearchTerms(string searchTerms)
     {
-        var searchField = Wait.WaitForDisplayElement(searchInput);
+        var searchField = WaitHelp.WaitForDisplayElement(searchInput);
         searchField.SendKeys(searchTerms);
         return this;
     }

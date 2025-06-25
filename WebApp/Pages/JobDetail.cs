@@ -11,7 +11,7 @@ namespace WebApp.Pages
 
         public int GetNumberOfOccurances(string language)
         {
-            var results = Wait.WaitForAllElements(OccurancesOfLanguage(language));
+            var results = WaitHelp.WaitForAllElements(OccurancesOfLanguage(language));
             return results.Count;
         }
     }

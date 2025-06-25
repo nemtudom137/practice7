@@ -27,12 +27,12 @@ public class CareersPage : BasePage
         Driver.FindElement(locations).Click();
         if (string.IsNullOrEmpty(city))
         {
-            Wait.ClickOnElement(GetLocationOption(location));
+            WaitHelp.ClickOnElement(GetLocationOption(location));
         }
         else
         {
-            Wait.ClickOnElement(GetLocationOptionGroup(location));
-            Wait.ClickOnElement(GetLocationOption(city));
+            WaitHelp.ClickOnElement(GetLocationOptionGroup(location));
+            WaitHelp.ClickOnElement(GetLocationOption(city));
         }
 
         return this;
@@ -41,8 +41,7 @@ public class CareersPage : BasePage
     public CareersPage ChooseRemote()
     {
         var remote = Driver.FindElement(remoteOption);
-        new Actions(Driver)
-           .MoveToElement(remote)
+        new Actions(Driver).MoveToElement(remote)
            .Click()
            .Perform();
 

@@ -12,13 +12,13 @@ public class JobListings : CareersPage
 
     public JobListings SortResultByDate()
     {
-        Wait.ClickOnElement(sortByDate);
+        WaitHelp.ClickOnElement(sortByDate);
         return this;
     }
 
     public JobDetail ClicOnTheLastApplyButton()
     {
-        Wait.ClickOnElement(lastApplyButton);
+        WaitHelp.ClickOnElement(lastApplyButton);
         return new JobDetail(Driver);
     }
 }

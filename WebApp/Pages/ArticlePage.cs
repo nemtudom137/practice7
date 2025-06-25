@@ -11,6 +11,6 @@ public class ArticlePage : BasePage
 
     public bool GetNumberOfOccurances(string title)
     {
-        return Wait.AnyElementWith(titleOccurances, x => x.Text.Contains(title));
+        return WaitHelp.AnyElementWith(titleOccurances, x => x.Text.Contains(title));
     }
 }

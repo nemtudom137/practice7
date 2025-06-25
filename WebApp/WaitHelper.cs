@@ -5,18 +5,19 @@ using System.Collections.ObjectModel;
 namespace WebApp;
 public class WaitHelper
 {
-    private readonly IWebDriver driver;
-    private readonly TimeSpan timeout;
+    public WebDriverWait Wait { get; init; }
 
     public WaitHelper(IWebDriver driver, TimeSpan timeout)
     {
-        this.driver = driver;
-        this.timeout = timeout;
+        Wait = new WebDriverWait(driver, timeout);
+        Wait.IgnoreExceptionTypes(typeof(ElementClickInterceptedException), 
+            typeof(ElementNotInteractableException), 
+            typeof(StaleElementReferenceException));
     }
 
     public IWebElement WaitForDisplayElement(By by)
     {
-        return new WebDriverWait(driver, timeout).Until(d =>
+        return Wait.Until(d =>
         {
             var element = d.FindElement(by);
             if (element != null && element.Displayed && element.Enabled)
@@ -30,13 +31,7 @@ public class WaitHelper
 
     public void ClickOnElement(By by)
     {
-        var wait = new WebDriverWait(driver, timeout)
-        {
-            PollingInterval = TimeSpan.FromMilliseconds(500),
-        };
-
-        wait.IgnoreExceptionTypes(typeof(ElementClickInterceptedException), typeof(ElementNotInteractableException), typeof(StaleElementReferenceException));
-        wait.Until(d =>
+        Wait.Until(d =>
         {
             var element = d.FindElement(by);
             element.Click();
@@ -46,13 +41,7 @@ public class WaitHelper
 
     public ReadOnlyCollection<IWebElement> WaitForAllElements(By by)
     {
-        var wait = new WebDriverWait(driver, timeout)
-        {
-            PollingInterval = TimeSpan.FromMilliseconds(500),
-        };
-
-        wait.IgnoreExceptionTypes(typeof(StaleElementReferenceException));
-        return wait.Until(d =>
+        return Wait.Until(d =>
         {
             var elements = d.FindElements(by);
             if (elements.Count > 0 && elements.All(x => x.Enabled))
@@ -66,13 +55,7 @@ public class WaitHelper
 
     public bool AnyElementWith(By by, Predicate<IWebElement> predicate)
     {
-        var wait = new WebDriverWait(driver, timeout)
-        {
-            PollingInterval = TimeSpan.FromMilliseconds(500),
-        };
-
-        wait.IgnoreExceptionTypes(typeof(StaleElementReferenceException));
-        return wait.Until(d =>
+        return Wait.Until(d =>
         {
             var elements = d.FindElements(by);
             if (elements.Count > 0 && elements.Any(x => x.Displayed && predicate(x)))
@@ -86,8 +69,7 @@ public class WaitHelper
 
     public void WaitForDowloadedFile(string directory)
     {
-        var wait = new WebDriverWait(driver, timeout);
-        wait.Until(driver =>
+        Wait.Until(driver =>
         {
             var files = Directory.GetFiles(directory);
             return files is not null && files.Length != 0 &&

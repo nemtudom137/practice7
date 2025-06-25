@@ -15,17 +15,13 @@ public class AboutPage : BasePage
     public AboutPage ScrollToEPAMAtAGlance()
     {
         var section = Driver.FindElement(EPAMAtAGlance);
-
-        new Actions(Driver)
-            .ScrollToElement(section)
-            .Perform();
-
+        new Actions(Driver).ScrollToElement(section).Perform();
         return this;
     }
 
     public void ClickOnDownload(string directory)
     {
         Driver.FindElement(downloadButton).Click();
-        Wait.WaitForDowloadedFile(directory);
+        WaitHelp.WaitForDowloadedFile(directory);
     }
 }

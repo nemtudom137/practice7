@@ -4,6 +4,8 @@ using WebApp.Pages;
 
 namespace WebAppTests;
 
+[TestFixture(true)]
+[TestFixture(false)]
 public class WebAppTests
 {
     private static readonly object[][] CarrierSearch =
@@ -21,7 +23,13 @@ public class WebAppTests
     private static readonly object[] SwipeTimes = [0, 2, 7];
 
     private readonly string downloadDirectory = Path.Combine(Directory.GetCurrentDirectory(), "DownloadTest");
-    private IWebDriver driver;
+    private readonly bool headlessMode;
+    private IWebDriver? driver;
+
+    public WebAppTests(bool headlessMode)
+    {
+        this.headlessMode = headlessMode;
+    }
 
     [SetUp]
     public void Setup()
@@ -32,9 +40,19 @@ public class WebAppTests
         }
 
         Directory.CreateDirectory(downloadDirectory);
+
         var options = new ChromeOptions();
         options.AddUserProfilePreference("download.default_directory", downloadDirectory);
-        options.AddArgument("--start-maximized");
+        if (headlessMode)
+        {
+            options.AddArgument("--headless");
+            options.AddArgument("--window-size=1920,1080");
+            options.AddArguments("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36");
+        }
+        else
+        {
+            options.AddArgument("--start-maximized");
+        }
 
         driver = new ChromeDriver(options);
     }
@@ -42,7 +60,7 @@ public class WebAppTests
     [TearDown]
     public void TearDown()
     {
-        driver.Quit();
+        driver?.Quit();
         Directory.Delete(downloadDirectory, true);
     }
 
@@ -79,8 +97,7 @@ public class WebAppTests
             .ClickOnFind()
             .GetSearchResults();
 
-        Console.WriteLine(results.Count);
-        Assert.That(results.All(x => x.Contains(searchString, StringComparison.InvariantCultureIgnoreCase)), Is.True);
+        Assert.That(results.Count > 0 && results.All(x => x.Contains(searchString, StringComparison.InvariantCultureIgnoreCase)), Is.True);
     }
 
     [Test]
@@ -95,10 +112,13 @@ public class WebAppTests
              .ScrollToEPAMAtAGlance()
              .ClickOnDownload(downloadDirectory);
 
-        var downloadedFile = Directory.GetFiles(downloadDirectory)[0];
-        var fileName = Path.GetFileName(downloadedFile);
+        var downloadedFiles = Directory.GetFiles(downloadDirectory);
 
-        Assert.That(fileName, Is.EqualTo(expectedFileName));
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(downloadedFiles.Length, Is.EqualTo(1));
+            Assert.That(Path.GetFileName(downloadedFiles[0]), Is.EqualTo(expectedFileName));
+        }
     }
 
     [Test]

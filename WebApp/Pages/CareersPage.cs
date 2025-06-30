@@ -3,16 +3,15 @@ using OpenQA.Selenium.Interactions;
 
 namespace WebApp.Pages;
 
-public class CareersPage : BasePage
+public class CareersPage : PageBase
 {
-    protected readonly By keyword = By.CssSelector("input#new_form_job_search-keyword");
-    protected readonly By locations = By.CssSelector(".recruiting-search__location span[role='combobox']");
-    protected readonly By remoteOption = By.CssSelector(".job-search__filter-list input[name='remote']");
-    protected readonly By findButton = By.CssSelector("button[type='submit']");
-    protected static By GetLocationOption(string location) => By.XPath($"//li[contains(text(),'{location}')]");
-    protected static By GetLocationOptionGroup(string location) => By.XPath($"//strong[contains(text(),'{location}')]");
+    private readonly By keyword = By.CssSelector("input#new_form_job_search-keyword");
+    private readonly By locations = By.CssSelector(".recruiting-search__location span[role='combobox']");
+    private readonly By remoteOption = By.CssSelector(".job-search__filter-list input[name='remote']");
+    private readonly By findButton = By.CssSelector("button[type='submit']");
 
-    internal CareersPage(IWebDriver driver) : base(driver, TimeSpan.FromSeconds(2))
+    internal CareersPage(IWebDriver driver)
+        : base(driver)
     {
     }
 
@@ -53,4 +52,8 @@ public class CareersPage : BasePage
         Driver.FindElement(findButton).Click();
         return new JobListings(Driver);
     }
+
+    private static By GetLocationOption(string location) => By.XPath($"//li[contains(text(),'{location}')]");
+
+    private static By GetLocationOptionGroup(string location) => By.XPath($"//strong[contains(text(),'{location}')]");
 }

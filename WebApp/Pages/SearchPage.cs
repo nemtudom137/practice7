@@ -3,13 +3,15 @@ using OpenQA.Selenium.Interactions;
 
 namespace WebApp.Pages;
 
-public class SearchPage : BasePage
+public class SearchPage : PageBase
 {
     private readonly By searchResultItem = By.XPath("//article[@class='search-results__item']");
     private readonly By viewMoreButton = By.ClassName("search-results__view-more");
-    internal SearchPage(IWebDriver driver) : base(driver)
+
+    internal SearchPage(IWebDriver driver)
+        : base(driver)
     {
-    }    
+    }
 
     public List<string> GetSearchResults()
     {

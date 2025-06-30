@@ -2,13 +2,13 @@
 
 namespace WebApp.Pages;
 
-public class HomePage : BasePage
+public class HomePage : PageBase
 {
-
     private readonly string url = "https://www.epam.com/";
     private readonly By acceptCookies = By.XPath("//button[text()='Accept All']");
 
-    public HomePage(IWebDriver driver) : base(driver, TimeSpan.FromSeconds(5))
+    public HomePage(IWebDriver? driver)
+        : base(driver)
     {
         Driver.Navigate().GoToUrl(url);
     }

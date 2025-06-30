@@ -6,23 +6,27 @@ namespace WebApp.Pages.Sections;
 public class Carousel : PageObjectBase
 {
     private readonly string root;
-    private By RightArrow => By.XPath($"{root}//button[contains(@class,'slider__right-arrow')]");
-    private By ActiveSlideText => By.XPath($"{root}//div[@aria-hidden='false']//div[@class ='text']");
-    private By ActiveSlideContetnLink => By.XPath($"{root}//div[@aria-hidden='false']//a");
-   
-    internal Carousel(IWebDriver driver, string root) : base(driver)
+
+    internal Carousel(IWebDriver driver, string root)
+        : base(driver)
     {
         this.root = root;
     }
+
+    private By RightArrow => By.XPath($"{root}//button[contains(@class,'slider__right-arrow')]");
+
+    private By ActiveSlideText => By.XPath($"{root}//div[@aria-hidden='false']//div[@class ='text']");
+
+    private By ActiveSlideContetnLink => By.XPath($"{root}//div[@aria-hidden='false']//a");
 
     public Carousel Swipe(int time)
     {
         ArgumentOutOfRangeException.ThrowIfNegative(time);
         var arrow = WaitHelp.WaitForDisplayElement(RightArrow);
+        var action = new Actions(Driver).MoveToElement(arrow);
         for (int i = 0; i < time; i++)
         {
-            new Actions(Driver).MoveToElement(arrow)
-                .Click()
+            action.Click()
                 .Pause(TimeSpan.FromMilliseconds(500))
                 .Perform();
         }
@@ -38,4 +42,3 @@ public class Carousel : PageObjectBase
         return new ArticlePage(Driver);
     }
 }
-

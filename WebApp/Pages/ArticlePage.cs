@@ -2,15 +2,17 @@
 
 namespace WebApp.Pages;
 
-public class ArticlePage : BasePage
+public class ArticlePage : PageBase
 {
-    private readonly By titleOccurances = By.XPath($"//p[@class='scaling-of-text-wrapper']");
-    internal ArticlePage(IWebDriver driver) : base(driver, TimeSpan.FromSeconds(5))
+    private readonly By titles = By.XPath($"//p[@class='scaling-of-text-wrapper']");
+
+    internal ArticlePage(IWebDriver driver)
+        : base(driver)
     {
     }
 
     public bool GetNumberOfOccurances(string title)
     {
-        return WaitHelp.AnyElementWith(titleOccurances, x => x.Text.Contains(title));
+        return WaitHelp.AnyElementDisplayed(titles, x => x.Text.Contains(title));
     }
 }

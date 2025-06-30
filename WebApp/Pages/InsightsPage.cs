@@ -3,11 +3,12 @@ using WebApp.Pages.Sections;
 
 namespace WebApp.Pages;
 
-public class InsightsPage : BasePage
+public class InsightsPage : PageBase
 {
     private readonly string topmostCarousel = "//div[@class='slider section'][1]";
 
-    internal InsightsPage(IWebDriver driver) : base(driver)
+    internal InsightsPage(IWebDriver driver)
+        : base(driver)
     {
         TopmostCarousel = new Carousel(Driver, topmostCarousel);
     }

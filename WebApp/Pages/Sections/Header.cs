@@ -11,7 +11,8 @@ public class Header : PageObjectBase
     private readonly By searchInput = By.CssSelector("input#new_form_search");
     private readonly By findButton = By.XPath("//div[contains(@class,'search-results__input-holder')]/following-sibling::button");
 
-    internal Header(IWebDriver driver) : base(driver)
+    internal Header(IWebDriver driver)
+        : base(driver)
     {
     }
 

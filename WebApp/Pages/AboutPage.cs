@@ -3,18 +3,19 @@ using OpenQA.Selenium.Interactions;
 
 namespace WebApp.Pages;
 
-public class AboutPage : BasePage
+public class AboutPage : PageBase
 {
-    private readonly By EPAMAtAGlance = By.XPath("//span[contains(text()[last()],'a Glance')]/ancestor::div[@class='colctrl__holder']");
+    private readonly By epamAtAGlance = By.XPath("//span[contains(text()[last()],'a Glance')]/ancestor::div[@class='colctrl__holder']");
     private readonly By downloadButton = By.XPath("//span[contains(text(),'DOWNLOAD')]");
 
-    internal AboutPage(IWebDriver driver) : base(driver, TimeSpan.FromSeconds(10))
+    internal AboutPage(IWebDriver driver)
+        : base(driver, TimeSpan.FromSeconds(10))
     {
     }
 
     public AboutPage ScrollToEPAMAtAGlance()
     {
-        var section = Driver.FindElement(EPAMAtAGlance);
+        var section = Driver.FindElement(epamAtAGlance);
         new Actions(Driver).ScrollToElement(section).Perform();
         return this;
     }

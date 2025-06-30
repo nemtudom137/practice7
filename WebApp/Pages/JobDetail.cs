@@ -2,17 +2,25 @@
 
 namespace WebApp.Pages
 {
-    public class JobDetail : BasePage
+    public class JobDetail : PageBase
     {
-        private static By OccurancesOfLanguage(string language) => By.XPath($"//article//*[contains(text(),'{language}')]");
-        internal JobDetail(IWebDriver driver) : base(driver)
+        internal JobDetail(IWebDriver driver)
+            : base(driver)
         {
         }
 
         public int GetNumberOfOccurances(string language)
         {
-            var results = WaitHelp.WaitForAllElements(OccurancesOfLanguage(language));
-            return results.Count;
+            try
+            {
+                return WaitHelp.WaitForAllElements(OccurancesOfLanguage(language)).Count;
+            }
+            catch (TimeoutException)
+            {
+                return 0;
+            }
         }
+
+        private static By OccurancesOfLanguage(string language) => By.XPath($"//article//*[contains(text(),'{language}')]");
     }
 }

@@ -1,19 +1,20 @@
-﻿using OpenQA.Selenium;
+﻿using System.Collections.ObjectModel;
+using OpenQA.Selenium;
 using OpenQA.Selenium.Support.UI;
-using System.Collections.ObjectModel;
 
 namespace WebApp;
 public class WaitHelper
 {
-    public WebDriverWait Wait { get; init; }
-
     public WaitHelper(IWebDriver driver, TimeSpan timeout)
     {
         Wait = new WebDriverWait(driver, timeout);
-        Wait.IgnoreExceptionTypes(typeof(ElementClickInterceptedException), 
-            typeof(ElementNotInteractableException), 
+        Wait.IgnoreExceptionTypes(
+            typeof(ElementClickInterceptedException),
+            typeof(ElementNotInteractableException),
             typeof(StaleElementReferenceException));
     }
+
+    public WebDriverWait Wait { get; init; }
 
     public IWebElement WaitForDisplayElement(By by)
     {
@@ -33,8 +34,7 @@ public class WaitHelper
     {
         Wait.Until(d =>
         {
-            var element = d.FindElement(by);
-            element.Click();
+            d.FindElement(by).Click();
             return true;
         });
     }
@@ -53,7 +53,7 @@ public class WaitHelper
         });
     }
 
-    public bool AnyElementWith(By by, Predicate<IWebElement> predicate)
+    public bool AnyElementDisplayed(By by, Predicate<IWebElement> predicate)
     {
         return Wait.Until(d =>
         {

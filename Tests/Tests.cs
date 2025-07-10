@@ -1,118 +1,65 @@
-using OpenQA.Selenium;
-using OpenQA.Selenium.Chrome;
-using WebApp.Pages;
+using Business.Business;
+using Business.Data;
+using Core;
+using NUnit.Framework.Internal;
 
-namespace WebAppTests;
+namespace Tests;
 
-[TestFixture(true)]
-[TestFixture(false)]
 public class Tests
 {
-    private static readonly object[][] CarrierSearch =
-    [
-        ["C", "All Locations", string.Empty],
-        ["Java", "Japan", "Tokyo"]
-    ];
-
-    private static readonly object[] GlobalSearch =
-    [
-       "BLOCKCHAIN",
-       "RPA"
-    ];
-
-    private static readonly object[] SwipeTimes = [0, 2, 7];
-
-    private readonly string downloadDirectory = Path.Combine(Directory.GetCurrentDirectory(), "DownloadTest");
-    private readonly bool headlessMode;
-    private IWebDriver? driver;
-
-    public Tests(bool headlessMode)
-    {
-        this.headlessMode = headlessMode;
-    }
-
     [SetUp]
     public void Setup()
     {
-        if (Directory.Exists(downloadDirectory))
+        if (Directory.Exists(ConfigurationReader.Test.TestDirectory))
         {
-            Directory.Delete(downloadDirectory, true);
+            Directory.Delete(ConfigurationReader.Test.TestDirectory, true);
         }
 
-        Directory.CreateDirectory(downloadDirectory);
-
-        var options = new ChromeOptions();
-        options.AddUserProfilePreference("download.default_directory", downloadDirectory);
-        if (headlessMode)
-        {
-            options.AddArgument("--headless=new");
-            options.AddArgument("--window-size=1920,1080");
-            options.AddArgument("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36");
-        }
-        else
-        {
-            options.AddArgument("--start-maximized");
-        }
-
-        driver = new ChromeDriver(options);
+        Directory.CreateDirectory(ConfigurationReader.Test.TestDirectory);
     }
 
     [TearDown]
     public void TearDown()
     {
-        driver?.Quit();
-        Directory.Delete(downloadDirectory, true);
+        DriverContainer.QuitDriver();
     }
 
     [Test]
-    [TestCaseSource(nameof(CarrierSearch))]
+    [TestCaseSource(typeof(TestData), nameof(TestData.CarrierSearch))]
     public void CarrierSearchResult_ContainsLanguage(string language, string location, string city)
     {
-        var header = new HomePage(driver)
-            .AcceptCookies()
-            .Header;
+        LogHelper.Debug("aaaa");
+        var languageIsFound = HomeContext.Open()
+             .GoToCareers()
+             .SetSearchTerms(language)
+             .SetLocation(location, city)
+             .ChooseRemote()
+             .ClickOnFind()
+             .SortResultByDate()
+             .ClicOnTheLastApplyButton()
+             .IsLanguagePresent(language);
 
-        var n = header.ClickOnCareers()
-            .SetSearchTerms(language)
-            .SetLocation(location, city)
-            .ChooseRemote()
-            .ClickOnFind()
-            .SortResultByDate()
-            .ClicOnTheLastApplyButton()
-            .GetNumberOfOccurances(language);
-
-        Assert.That(n, Is.GreaterThan(0));
+        Assert.That(languageIsFound, Is.True);
     }
 
     [Test]
-    [TestCaseSource(nameof(GlobalSearch))]
+    [TestCaseSource(typeof(TestData), nameof(TestData.GlobalSearch))]
     public void GlobalSearchFirstResults_ContainKeyword(string searchString)
     {
-        var header = new HomePage(driver)
-            .AcceptCookies()
-            .Header;
-
-        var results = header.ClickOnSearchIcon()
-            .SetSearchTerms(searchString)
-            .ClickOnFind()
+        var results = HomeContext.Open()
+            .SearchOnHeader(searchString)
             .GetSearchResults();
 
         Assert.That(results.Count > 0 && results.All(x => x.Contains(searchString, StringComparison.InvariantCultureIgnoreCase)), Is.True);
     }
 
     [Test]
-    [TestCase("EPAM_Corporate_Overview_Q4FY-2024.pdf")]
+    [TestCaseSource(typeof(TestData), nameof(TestData.CompanyOverviewFileName))]
     public void DownloadOnAboutPage_GivesFileWithCorrectName(string expectedFileName)
     {
-        var header = new HomePage(driver)
-            .AcceptCookies()
-            .Header;
+        HomeContext.Open().GoToAbout().DownloadCompanyOverview();
 
-        header.ClickOnAbout()
-             .ScrollToEPAMAtAGlance()
-             .ClickOnDownload(downloadDirectory);
-
-        var downloadedFiles = Directory.GetFiles(downloadDirectory);
+        var downloadedFiles = Directory.GetFiles(ConfigurationReader.Test.TestDirectory);
 
         using (Assert.EnterMultipleScope())
         {
@@ -122,23 +69,14 @@ public class Tests
     }
 
     [Test]
-    [TestCaseSource(nameof(SwipeTimes))]
+    [TestCaseSource(typeof(TestData), nameof(TestData.SwipeTimes))]
     public void CarouselOnInsightsPage_RedirectToArticleWithCorrectName(int times)
     {
-        var header = new HomePage(driver)
-            .AcceptCookies()
-            .Header;
-
-        var carusel = header.ClickOnInsights()
-            .TopmostCarousel;
-
-        var articleTitle = carusel.Swipe(times)
-            .GetActivArticleTitle();
-
-        Console.WriteLine(articleTitle);
-
-        var isTitlePresentInTheArticle = carusel.ClickOnReadMore()
-            .GetNumberOfOccurances(articleTitle);
+        var insightsPage = HomeContext.Open().GoToInsights();
+        var articleTitle = insightsPage
+            .SwipeTheTopmostCarousel(times)
+            .GetTopmostCarouselTitle();
+        var isTitlePresentInTheArticle = insightsPage.GoToSlidelArticle().IsTitlePresent(articleTitle);
 
         Assert.That(isTitlePresentInTheArticle, Is.True);
     }

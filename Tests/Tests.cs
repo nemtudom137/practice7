@@ -6,7 +6,7 @@ namespace WebAppTests;
 
 [TestFixture(true)]
 [TestFixture(false)]
-public class WebAppTests
+public class Tests
 {
     private static readonly object[][] CarrierSearch =
     [
@@ -26,7 +26,7 @@ public class WebAppTests
     private readonly bool headlessMode;
     private IWebDriver? driver;
 
-    public WebAppTests(bool headlessMode)
+    public Tests(bool headlessMode)
     {
         this.headlessMode = headlessMode;
     }

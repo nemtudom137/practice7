@@ -9,6 +9,6 @@ public class HomePage : PageBase
 
     internal HomePage()
     {
-        DriverContainer.Driver.Navigate().GoToUrl(ConfigurationReader.Test.Url);
+        DriverContainer.Driver.Navigate().GoToUrl(ConfigurationManager.Test.Url);
     }
 }

@@ -1,34 +1,17 @@
 using Business.Business;
 using Business.Data;
 using Core;
+using Microsoft.VisualStudio.TestPlatform.ObjectModel;
 using NUnit.Framework.Internal;
 
 namespace Tests;
 
-public class Tests
+public class Tests : TestsBase
 {
-    [SetUp]
-    public void Setup()
-    {
-        if (Directory.Exists(ConfigurationReader.Test.TestDirectory))
-        {
-            Directory.Delete(ConfigurationReader.Test.TestDirectory, true);
-        }
-
-        Directory.CreateDirectory(ConfigurationReader.Test.TestDirectory);
-    }
-
-    [TearDown]
-    public void TearDown()
-    {
-        DriverContainer.QuitDriver();
-    }
-
     [Test]
     [TestCaseSource(typeof(TestData), nameof(TestData.CarrierSearch))]
     public void CarrierSearchResult_ContainsLanguage(string language, string location, string city)
     {
-        LogHelper.Debug("aaaa");
         var languageIsFound = HomeContext.Open()
              .GoToCareers()
              .SetSearchTerms(language)
@@ -54,12 +37,12 @@ public class Tests
     }
 
     [Test]
-    [TestCaseSource(typeof(TestData), nameof(TestData.CompanyOverviewFileName))]
+    [TestCase(TestData.CompanyOverviewFileName)]
     public void DownloadOnAboutPage_GivesFileWithCorrectName(string expectedFileName)
     {
         HomeContext.Open().GoToAbout().DownloadCompanyOverview();
 
-        var downloadedFiles = Directory.GetFiles(ConfigurationReader.Test.TestDirectory);
+        var downloadedFiles = Directory.GetFiles(ConfigurationManager.Test.DirectoryForDownload);
 
         using (Assert.EnterMultipleScope())
         {

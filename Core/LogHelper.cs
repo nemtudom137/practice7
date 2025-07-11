@@ -4,7 +4,7 @@ namespace Core;
 
 public static class LogHelper
 {
-    private static readonly Logger Log = LogManager.GetCurrentClassLogger();
+    public static readonly Logger Log = LogManager.GetCurrentClassLogger();
 
     public static void Trace(string msg) => Log.Trace(msg);
 

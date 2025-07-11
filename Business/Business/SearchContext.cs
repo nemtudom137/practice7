@@ -1,4 +1,5 @@
 ﻿using Business.ApplicationInterface;
+using Core;
 
 namespace Business.Business;
 
@@ -11,5 +12,10 @@ public class SearchContext
         page = new SearchPage();
     }
 
-    public List<string> GetSearchResults() => page.GetSearchResults();
+    public List<string> GetSearchResults()
+    {
+        var results = page.GetSearchResults();
+        LogHelper.Info($"{results.Count} search results was found.");
+        return results;
+    }
 }

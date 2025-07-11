@@ -1,4 +1,5 @@
 ﻿using Business.ApplicationInterface;
+using Core;
 
 namespace Business.Business;
 
@@ -14,6 +15,7 @@ public class CareersContext
     public CareersContext SetSearchTerms(string searchTerms)
     {
         page.SetField(CareersPage.Keyword, searchTerms);
+        LogHelper.Info($"Keyword field is set to {searchTerms}");
         return this;
     }
 
@@ -22,10 +24,12 @@ public class CareersContext
         if (string.IsNullOrEmpty(city))
         {
             page.SetLocation(location);
+            LogHelper.Info($"Location is set to {location}");
         }
         else
         {
             page.SetLocation(location, city);
+            LogHelper.Info($"Location is set to {location} - {city}");
         }
 
         return this;
@@ -34,12 +38,14 @@ public class CareersContext
     public CareersContext ChooseRemote()
     {
         page.ChooseRemote();
+        LogHelper.Info($"Remote is chosen");
         return this;
     }
 
     public JobListingsContext ClickOnFind()
     {
         PageBase.Click(CareersPage.FindButton);
+        LogHelper.Info("Click on FIND button.");
         return new JobListingsContext();
     }
 }

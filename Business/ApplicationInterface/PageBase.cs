@@ -1,4 +1,5 @@
 ﻿using Core;
+using NLog;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Interactions;
 

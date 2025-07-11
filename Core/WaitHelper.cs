@@ -8,7 +8,7 @@ namespace Core;
 public class WaitHelper
 {
     public WaitHelper()
-        : this(TimeSpan.FromSeconds(ConfigurationReader.Test.ExplicitTimeoutSec))
+        : this(TimeSpan.FromSeconds(ConfigurationManager.Test.ExplicitTimeoutSec))
     {
     }
 
@@ -65,13 +65,14 @@ public class WaitHelper
 
     public void WaitForDowloadedFile()
     {
-        string directory = ConfigurationReader.Test.TestDirectory;
+        string directory = ConfigurationManager.Test.DirectoryForDownload;
         Wait.Until(driver =>
         {
             var files = Directory.GetFiles(directory);
             return files is not null && files.Length != 0 &&
                 !files.Any(f => f.EndsWith(".crdownload")) &&
-                !files.Any(f => f.EndsWith(".part"));
+                !files.Any(f => f.EndsWith(".part")) &&
+                !files.Any(f => f.EndsWith(".tmp"));
         });
     }
 }

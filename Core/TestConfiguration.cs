@@ -4,8 +4,7 @@ namespace Core;
 
 public class TestConfiguration
 {
-    private string? testDirectory;
-    private int explicitTimeoutSec;
+    private readonly string testDirectory;
 
     public TestConfiguration(IConfiguration config)
     {
@@ -32,9 +31,16 @@ public class TestConfiguration
             throw new ArgumentException(nameof(ExplicitTimeoutSec));
         }
 
+        ArgumentOutOfRangeException.ThrowIfLessThanOrEqual(timeout, 0);
         ExplicitTimeoutSec = timeout;
 
-        TestDirectory = config["TestDirectory"] ?? throw new ArgumentException(nameof(TestDirectory));
+        var directory = config["TestDirectory"];
+        if (string.IsNullOrWhiteSpace(directory))
+        {
+            throw new ArgumentException(nameof(DirectoryForDownload));
+        }
+
+        testDirectory = Path.IsPathRooted(directory) ? directory : Path.Combine(Directory.GetCurrentDirectory(), directory);
     }
 
     public string Url { get; init; }
@@ -43,27 +49,9 @@ public class TestConfiguration
 
     public bool Headless { get; init; }
 
-    public int ExplicitTimeoutSec
-    {
-        get => explicitTimeoutSec;
-        init
-        {
-            ArgumentOutOfRangeException.ThrowIfLessThanOrEqual(value, 0);
-            explicitTimeoutSec = value;
-        }
-    }
+    public int ExplicitTimeoutSec { get; init; }
 
-    public string TestDirectory
-    {
-        get => testDirectory ?? throw new ArgumentException(nameof(TestDirectory));
-        init
-        {
-            if (string.IsNullOrWhiteSpace(value))
-            {
-                throw new ArgumentException(nameof(TestDirectory));
-            }
+    public string DirectoryForDownload => Path.Combine(testDirectory, "Download");
 
-            testDirectory = Path.IsPathRooted(value) ? value : Path.Combine(Directory.GetCurrentDirectory(), value);
-        }
-    }
+    public string DirectoryForScreenshots => Path.Combine(testDirectory, "Screenshots");
 }

@@ -1,4 +1,5 @@
-﻿using OpenQA.Selenium;
+﻿
+using OpenQA.Selenium;
 
 namespace Core.DriverFactory;
 
@@ -6,7 +7,7 @@ internal static class DriverCreator
 {
     public static IWebDriver CreateDriver()
     {
-        var browser = ConfigurationReader.Test.Browser;
+        var browser = ConfigurationManager.Test.Browser;
         IDriverFactory factory = browser switch
         {
             BrowserType.Chrome => new ChromeFactory(),
@@ -15,6 +16,8 @@ internal static class DriverCreator
             _ => throw new NotSupportedException("Not supported browser"),
         };
 
-        return factory.CreateDriver(ConfigurationReader.Test.Headless, ConfigurationReader.Test.TestDirectory);
+        var driver = factory.CreateDriver(ConfigurationManager.Test.Headless, ConfigurationManager.Test.DirectoryForDownload);
+        LogHelper.Info("Driver is created.");
+        return driver;
     }
 }

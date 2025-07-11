@@ -20,5 +20,6 @@ public static class DriverContainer
     {
         driver?.Quit();
         driver = null;
+        LogHelper.Info($"Driver is closed.");
     }
 }

@@ -13,8 +13,5 @@ public class ArticleContext : ContextBase
         page = new ArticlePage(Driver);
     }
 
-    public bool IsTitlePresent(string title)
-    {
-        return page.GetNumberOfOccurances(title) > 0;
-    }
+    public bool IsTitlePresent(string title) => page.IsTitlePresent(title);
 }

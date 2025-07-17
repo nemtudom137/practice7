@@ -12,19 +12,8 @@ public class ArticlePage : PageBase
     {
     }
 
-    public int GetNumberOfOccurances(string title)
+    public bool IsTitlePresent(string title)
     {
-        int n;
-        try
-        {
-            n = WaitHelper.WaitForAnyElement(Titles, x => x.Text.Contains(title)).Count;
-        }
-        catch (WebDriverTimeoutException)
-        {
-            n = 0;
-        }
-
-        Log.Trace($"Number of occurancs of {title}: {n}");
-        return n;
+        return WaitHelper.AnyElementDisplayed(Titles, x => x.Text.Contains(title));
     }
 }

@@ -39,31 +39,30 @@ public class WaitHelper
         });
     }
 
-    public ReadOnlyCollection<IWebElement> WaitForAnyElement(By by)
+    public bool IsElementPresent(By by)
     {
-        return Wait.Until(d =>
+        try
         {
-            var elements = d.FindElements(by);
-            if (elements.Count > 0)
-            {
-                return elements;
-            }
-
-            return null;
-        });
+            Wait.Until(d => d.FindElement(by));
+            return true;
+        }
+        catch (WebDriverTimeoutException)
+        {
+            return false;
+        }
     }
 
-    public ReadOnlyCollection<IWebElement> WaitForAnyElement(By by, Predicate<IWebElement> predicate)
+    public bool AnyElementDisplayed(By by, Predicate<IWebElement> predicate)
     {
         return Wait.Until(d =>
         {
             var elements = d.FindElements(by);
-            if (elements.Count > 0 && elements.Any(x => predicate(x)))
+            if (elements.Count > 0 && elements.Any(x => x.Displayed && predicate(x)))
             {
-                return elements;
+                return true;
             }
 
-            return null;
+            return false;
         });
     }
 

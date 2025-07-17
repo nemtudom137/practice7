@@ -13,8 +13,5 @@ public class JobDetailContext : ContextBase
         page = new JobDetailPage(Driver);
     }
 
-    public bool IsLanguagePresent(string language)
-    {
-        return page.GetNumberOfOccurances(language) > 0;
-    }
+    public bool IsLanguagePresent(string language) => page.IsLanguagePresent(language);
 }

@@ -12,7 +12,7 @@ public class Tests : TestsBase
     [TestCaseSource(typeof(TestData), nameof(TestData.CarrierSearch))]
     public void CarrierSearchResult_ContainsLanguage(string language, string location, string city)
     {
-        var languageIsFound = HomeContext.Open()
+        var languageIsFound = HomeContext.Open(Driver)
              .GoToCareers()
              .SetSearchTerms(language)
              .SetLocation(location, city)
@@ -29,7 +29,7 @@ public class Tests : TestsBase
     [TestCaseSource(typeof(TestData), nameof(TestData.GlobalSearch))]
     public void GlobalSearchFirstResults_ContainKeyword(string searchString)
     {
-        var results = HomeContext.Open()
+        var results = HomeContext.Open(Driver)
             .SearchOnHeader(searchString)
             .GetSearchResults();
 
@@ -40,9 +40,9 @@ public class Tests : TestsBase
     [TestCase(TestData.CompanyOverviewFileName)]
     public void DownloadOnAboutPage_GivesFileWithCorrectName(string expectedFileName)
     {
-        HomeContext.Open().GoToAbout().DownloadCompanyOverview();
+        HomeContext.Open(Driver).GoToAbout().DownloadCompanyOverview();
 
-        var downloadedFiles = Directory.GetFiles(ConfigurationManager.Test.DirectoryForDownload);
+        var downloadedFiles = Directory.GetFiles(ConfigurationManager.Test.DownloadDirectory);
 
         using (Assert.EnterMultipleScope())
         {
@@ -55,7 +55,7 @@ public class Tests : TestsBase
     [TestCaseSource(typeof(TestData), nameof(TestData.SwipeTimes))]
     public void CarouselOnInsightsPage_RedirectToArticleWithCorrectName(int times)
     {
-        var insightsPage = HomeContext.Open().GoToInsights();
+        var insightsPage = HomeContext.Open(Driver).GoToInsights();
         var articleTitle = insightsPage
             .SwipeTheTopmostCarousel(times)
             .GetTopmostCarouselTitle();

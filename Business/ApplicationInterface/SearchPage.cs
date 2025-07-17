@@ -9,9 +9,14 @@ public class SearchPage : PageBase
     private static readonly By SearchResultItem = By.XPath("//article[@class='search-results__item']");
     private static readonly By ViewMoreButton = By.ClassName("search-results__view-more");
 
+    internal SearchPage(IWebDriver driver)
+        : base(driver)
+    {
+    }
+
     public List<string> GetSearchResults()
     {
-        var action = new Actions(DriverContainer.Driver);
+        var action = new Actions(Driver);
 
         while (true)
         {
@@ -24,6 +29,8 @@ public class SearchPage : PageBase
                 .MoveToElement(button)
                 .Click()
                 .Perform();
+
+                Log.Trace($"Element located by {ViewMoreButton} is clicked");
             }
             catch (ElementNotInteractableException)
             {
@@ -31,12 +38,12 @@ public class SearchPage : PageBase
             }
         }
 
-        return DriverContainer.Driver.FindElements(SearchResultItem).Select(x => x.Text).ToList();
+        return Driver.FindElements(SearchResultItem).Select(x => x.Text).ToList();
     }
 
     private void ScrollDownSearchResults(By resultElement)
     {
-        var action = new Actions(DriverContainer.Driver);
+        var action = new Actions(Driver);
 
         int totalCount = 0;
         int currentCount = 0;
@@ -50,6 +57,8 @@ public class SearchPage : PageBase
                 .SendKeys(Keys.End)
                 .KeyUp(Keys.Control)
                 .Perform();
+
+            Log.Trace($"Scroll to the bottom.");
 
             WaitHelper.Wait.Until(d =>
             {

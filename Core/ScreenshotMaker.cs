@@ -1,24 +1,32 @@
 ﻿using System.Drawing.Imaging;
+using NLog;
 using OpenQA.Selenium;
 
 namespace Core;
 
-public static class ScreenshotMaker
+public class ScreenshotMaker
 {
+    private static readonly Logger Log = LogManager.GetCurrentClassLogger();
     private static readonly ImageFormat ImageFormat = ImageFormat.Png;
+    private readonly IWebDriver driver;
 
-    public static void TakeBrowserScreenshot(string testName, params object?[] arguments)
+    public ScreenshotMaker(IWebDriver? driver)
+    {
+        this.driver = driver ?? throw new ArgumentNullException(nameof(driver));
+    }
+
+    public void TakeBrowserScreenshot(string testName, params object?[] arguments)
     {
         try
         {
-            var path = Path.Combine(ConfigurationManager.Test.DirectoryForScreenshots, ScreenshotName(testName, arguments));
-            Screenshot screenshot = ((ITakesScreenshot)DriverContainer.Driver).GetScreenshot();
+            var path = Path.Combine(ConfigurationManager.Test.ScreenshotDirectory, ScreenshotName(testName, arguments));
+            Screenshot screenshot = ((ITakesScreenshot)driver).GetScreenshot();
             screenshot.SaveAsFile(path);
-            LogHelper.Info($"Screenshot saved: {path}");
+            Log.Info($"Screenshot saved: {path}");
         }
         catch (Exception ex)
         {
-            LogHelper.Error($"Failed to take screenshot: {ex.Message}");
+            Log.Error($"Failed to take screenshot: {ex.Message}", ex);
         }
     }
 

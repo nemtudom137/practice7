@@ -1,57 +1,20 @@
-﻿using Microsoft.Extensions.Configuration;
-
-namespace Core;
+﻿namespace Core;
 
 public class TestConfiguration
 {
-    private readonly string testDirectory;
+    public string Url { get; set; }
 
-    public TestConfiguration(IConfiguration config)
-    {
-        ArgumentNullException.ThrowIfNull(config);
+    public BrowserType Browser { get; set; }
 
-        Url = config["Url"] ?? throw new ArgumentException(nameof(Url));
+    public bool Headless { get; set; }
 
-        if (!Enum.TryParse<BrowserType>(config["Browser"], out BrowserType browser))
-        {
-            throw new ArgumentException(nameof(Browser));
-        }
+    public int ExplicitTimeoutSec { get; set; }
 
-        Browser = browser;
+    public string TestDirectory { get; set; }
 
-        if (!bool.TryParse(config["Headless"], out bool headless))
-        {
-            throw new ArgumentException(nameof(Headless));
-        }
+    public string DownloadDirectory => Path.Combine(Directory.GetCurrentDirectory(), TestDirectory, "Download");
 
-        Headless = headless;
+    public string ScreenshotDirectory => Path.Combine(Directory.GetCurrentDirectory(), TestDirectory, "Screenshot");
 
-        if (!int.TryParse(config["ExplicitTimeoutSec"], out int timeout))
-        {
-            throw new ArgumentException(nameof(ExplicitTimeoutSec));
-        }
 
-        ArgumentOutOfRangeException.ThrowIfLessThanOrEqual(timeout, 0);
-        ExplicitTimeoutSec = timeout;
-
-        var directory = config["TestDirectory"];
-        if (string.IsNullOrWhiteSpace(directory))
-        {
-            throw new ArgumentException(nameof(DirectoryForDownload));
-        }
-
-        testDirectory = Path.IsPathRooted(directory) ? directory : Path.Combine(Directory.GetCurrentDirectory(), directory);
-    }
-
-    public string Url { get; init; }
-
-    public BrowserType Browser { get; init; }
-
-    public bool Headless { get; init; }
-
-    public int ExplicitTimeoutSec { get; init; }
-
-    public string DirectoryForDownload => Path.Combine(testDirectory, "Download");
-
-    public string DirectoryForScreenshots => Path.Combine(testDirectory, "Screenshots");
 }

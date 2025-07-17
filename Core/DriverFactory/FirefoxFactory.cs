@@ -12,6 +12,7 @@ internal class FirefoxFactory : IDriverFactory
             Profile = new FirefoxProfile(),
         };
 
+        options.Profile.SetPreference("browser.download.folderList", 2);
         options.Profile.SetPreference("browser.download.dir", downloadDirectory);
 
         if (headless)

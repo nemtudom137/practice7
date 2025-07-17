@@ -1,24 +1,25 @@
 ﻿using Business.ApplicationInterface;
-using Core;
+using OpenQA.Selenium;
 
 namespace Business.Business;
 
-public class AboutContext
+public class AboutContext : ContextBase
 {
     private readonly AboutPage page;
 
-    internal AboutContext()
+    internal AboutContext(IWebDriver? driver)
+        : base(driver)
     {
-        page = new AboutPage();
+        page = new AboutPage(Driver);
     }
 
     public void DownloadCompanyOverview()
     {
-        PageBase.ScrollToElement(AboutPage.EpamAtAGlance);
-        LogHelper.Info("Scroll down to the EPAM at a Glance section.");
-        PageBase.Click(AboutPage.DownloadButton);
-        LogHelper.Info("Click on DOWNLOAD button.");
+        page.ScrollToElement(AboutPage.EpamAtAGlance);
+        Log.Info("Scroll down to the EPAM at a Glance section.");
+        page.Click(AboutPage.DownloadButton);
+        Log.Info("Click on DOWNLOAD button.");
         page.WaitForDownload();
-        LogHelper.Info("File downloaded.");
+        Log.Info("File downloaded.");
     }
 }

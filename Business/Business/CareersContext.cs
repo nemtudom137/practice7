@@ -1,21 +1,22 @@
 ﻿using Business.ApplicationInterface;
-using Core;
+using OpenQA.Selenium;
 
 namespace Business.Business;
 
-public class CareersContext
+public class CareersContext : ContextBase
 {
     private readonly CareersPage page;
 
-    internal CareersContext()
+    internal CareersContext(IWebDriver? driver)
+        : base(driver)
     {
-        page = new CareersPage();
+        page = new CareersPage(Driver);
     }
 
     public CareersContext SetSearchTerms(string searchTerms)
     {
         page.SetField(CareersPage.Keyword, searchTerms);
-        LogHelper.Info($"Keyword field is set to {searchTerms}");
+        Log.Info($"Keyword field is set to {searchTerms}");
         return this;
     }
 
@@ -24,12 +25,12 @@ public class CareersContext
         if (string.IsNullOrEmpty(city))
         {
             page.SetLocation(location);
-            LogHelper.Info($"Location is set to {location}");
+            Log.Info($"Location is set to {location}");
         }
         else
         {
             page.SetLocation(location, city);
-            LogHelper.Info($"Location is set to {location} - {city}");
+            Log.Info($"Location is set to {location} - {city}");
         }
 
         return this;
@@ -38,14 +39,14 @@ public class CareersContext
     public CareersContext ChooseRemote()
     {
         page.ChooseRemote();
-        LogHelper.Info($"Remote is chosen");
+        Log.Info($"Remote is chosen");
         return this;
     }
 
     public JobListingsContext ClickOnFind()
     {
-        PageBase.Click(CareersPage.FindButton);
-        LogHelper.Info("Click on FIND button.");
-        return new JobListingsContext();
+        page.Click(CareersPage.FindButton);
+        Log.Info("Click on FIND button.");
+        return new JobListingsContext(Driver);
     }
 }

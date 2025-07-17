@@ -7,15 +7,10 @@ namespace Core;
 
 public class WaitHelper
 {
-    public WaitHelper()
-        : this(TimeSpan.FromSeconds(ConfigurationManager.Test.ExplicitTimeoutSec))
-    {
-    }
-
-    public WaitHelper(TimeSpan timeout)
+    public WaitHelper(IWebDriver driver, TimeSpan timeout)
     {
         ArgumentOutOfRangeException.ThrowIfLessThanOrEqual(timeout, TimeSpan.Zero);
-        Wait = new WebDriverWait(DriverContainer.Driver, timeout);
+        Wait = new WebDriverWait(driver, timeout);
         Wait.IgnoreExceptionTypes(
             typeof(ElementClickInterceptedException),
             typeof(ElementNotInteractableException),
@@ -31,6 +26,15 @@ public class WaitHelper
         Wait.Until(d =>
         {
             d.FindElement(by).Click();
+            return true;
+        });
+    }
+
+    public void ClickOnElement(Func<string, By> getBy, string text)
+    {
+        Wait.Until(d =>
+        {
+            d.FindElement(getBy(text)).Click();
             return true;
         });
     }
@@ -65,7 +69,7 @@ public class WaitHelper
 
     public void WaitForDowloadedFile()
     {
-        string directory = ConfigurationManager.Test.DirectoryForDownload;
+        string directory = ConfigurationManager.Test.DownloadDirectory;
         Wait.Until(driver =>
         {
             var files = Directory.GetFiles(directory);

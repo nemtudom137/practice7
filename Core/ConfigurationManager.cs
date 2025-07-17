@@ -1,9 +1,11 @@
 ﻿using Microsoft.Extensions.Configuration;
+using NLog;
 
 namespace Core;
 
 public static class ConfigurationManager
 {
+    private static readonly Logger Log = LogManager.GetCurrentClassLogger();
     private static TestConfiguration? test;
 
     public static TestConfiguration Test
@@ -17,7 +19,7 @@ public static class ConfigurationManager
 
     public static void SetDownloadFolder()
     {
-        var download = Test.DirectoryForDownload;
+        var download = Test.DownloadDirectory;
         if (Directory.Exists(download))
         {
             Directory.Delete(download, true);
@@ -28,7 +30,7 @@ public static class ConfigurationManager
 
     public static void SetScreenshotFolder()
     {
-        var screenshots = Test.DirectoryForScreenshots;
+        var screenshots = Test.ScreenshotDirectory;
 
         if (!Directory.Exists(screenshots))
         {
@@ -43,9 +45,10 @@ public static class ConfigurationManager
            .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
            .Build();
 
-        var testConfig = new TestConfiguration(config.GetSection("Test"));
-        LogHelper.Info($"Config: {testConfig.Url}, {testConfig.Browser}, headless: {testConfig.Headless}, timeout: {testConfig.ExplicitTimeoutSec}, download: {testConfig.DirectoryForDownload}, screenshots: {testConfig.DirectoryForScreenshots}");
+        var testConfig = config.GetSection("Test").Get<TestConfiguration>();
 
-        return testConfig;
+        Log.Info($"Config: {testConfig?.Url}, {testConfig?.Browser}, headless: {testConfig?.Headless}, timeout: {testConfig?.ExplicitTimeoutSec}, download: {testConfig?.DownloadDirectory}, screenshots: {testConfig?.ScreenshotDirectory}");
+
+        return testConfig ?? throw new ArgumentException(nameof(testConfig));
     }
 }

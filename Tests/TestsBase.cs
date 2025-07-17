@@ -1,10 +1,17 @@
 ﻿using Core;
+using Core.DriverFactory;
+using NLog;
 using NUnit.Framework.Interfaces;
+using OpenQA.Selenium;
 
 namespace Tests;
 
 public class TestsBase
 {
+    public static readonly Logger Log = LogManager.GetCurrentClassLogger();
+
+    protected IWebDriver? Driver { get; set; }
+
     [OneTimeSetUp]
     public void OneTimeSetUp()
     {
@@ -14,8 +21,9 @@ public class TestsBase
     [SetUp]
     public void Setup()
     {
+        Driver = DriverCreator.CreateDriver();
         ConfigurationManager.SetDownloadFolder();
-        LogHelper.Info($"{TestContext.CurrentContext.Test.MethodName} starts.");
+        Log.Info($"{TestContext.CurrentContext.Test.MethodName} starts.");
     }
 
     [TearDown]
@@ -23,14 +31,14 @@ public class TestsBase
     {
         var testName = TestContext.CurrentContext.Test.MethodName ?? "Unknown";
         var outcome = TestContext.CurrentContext.Result.Outcome.Status;
-        LogHelper.Info($"{testName} ends with outcome {outcome}.");
+        Log.Info($"{testName} ends with outcome {outcome}.");
 
         if (outcome == TestStatus.Failed)
         {
             var arguments = TestContext.CurrentContext.Test.Arguments;
-            ScreenshotMaker.TakeBrowserScreenshot(testName, arguments);
+            new ScreenshotMaker(Driver).TakeBrowserScreenshot(testName, arguments);
         }
 
-        DriverContainer.QuitDriver();
+        Driver?.Quit();
     }
 }

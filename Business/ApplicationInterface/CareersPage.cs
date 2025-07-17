@@ -11,25 +11,32 @@ public class CareersPage : PageBase
     private static readonly By Locations = By.CssSelector(".recruiting-search__location span[role='combobox']");
     private static readonly By RemoteOption = By.CssSelector(".job-search__filter-list input[name='remote']");
 
+    internal CareersPage(IWebDriver driver)
+       : base(driver)
+    {
+    }
+
     public void SetLocation(string location)
     {
         Click(Locations);
-        ClickWithWait(GetLocationOption(location));
+        WaitHelper.ClickOnElement(GetLocationOption, location);
     }
 
     public void SetLocation(string location, string city)
     {
         Click(Locations);
-        ClickWithWait(GetLocationOptionGroup(location));
-        ClickWithWait(GetLocationOption(city));
+        WaitHelper.ClickOnElement(GetLocationOptionGroup, location);
+        WaitHelper.ClickOnElement(GetLocationOption, city);
     }
 
     public void ChooseRemote()
     {
-        var remote = DriverContainer.Driver.FindElement(RemoteOption);
-        new Actions(DriverContainer.Driver).MoveToElement(remote)
+        var remote = Driver.FindElement(RemoteOption);
+        new Actions(Driver).MoveToElement(remote)
            .Click()
            .Perform();
+
+        Log.Trace($"Element located by {remote} is clicked");
     }
 
     private static By GetLocationOption(string location) => By.XPath($"//li[contains(text(),'{location}')]");

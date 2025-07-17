@@ -7,15 +7,24 @@ public class ArticlePage : PageBase
 {
     private static readonly By Titles = By.XPath($"//p[@class='scaling-of-text-wrapper']");
 
+    internal ArticlePage(IWebDriver driver)
+        : base(driver)
+    {
+    }
+
     public int GetNumberOfOccurances(string title)
     {
+        int n;
         try
         {
-            return WaitHelper.WaitForAnyElement(Titles, x => x.Text.Contains(title)).Count;
+            n = WaitHelper.WaitForAnyElement(Titles, x => x.Text.Contains(title)).Count;
         }
         catch (WebDriverTimeoutException)
         {
-            return 0;
+            n = 0;
         }
+
+        Log.Trace($"Number of occurancs of {title}: {n}");
+        return n;
     }
 }

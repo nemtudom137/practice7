@@ -1,10 +1,12 @@
-﻿
+﻿using NLog;
 using OpenQA.Selenium;
 
 namespace Core.DriverFactory;
 
-internal static class DriverCreator
+public static class DriverCreator
 {
+    public static readonly Logger Log = LogManager.GetCurrentClassLogger();
+
     public static IWebDriver CreateDriver()
     {
         var browser = ConfigurationManager.Test.Browser;
@@ -16,8 +18,8 @@ internal static class DriverCreator
             _ => throw new NotSupportedException("Not supported browser"),
         };
 
-        var driver = factory.CreateDriver(ConfigurationManager.Test.Headless, ConfigurationManager.Test.DirectoryForDownload);
-        LogHelper.Info("Driver is created.");
+        var driver = factory.CreateDriver(ConfigurationManager.Test.Headless, ConfigurationManager.Test.DownloadDirectory);
+        Log.Info("Driver is created.");
         return driver;
     }
 }

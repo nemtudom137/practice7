@@ -8,7 +8,8 @@ public class Carousel : PageBase
 {
     private readonly string root;
 
-    internal Carousel(string root)
+    internal Carousel(IWebDriver driver, string root)
+        : base(driver)
     {
         this.root = root;
     }
@@ -23,7 +24,7 @@ public class Carousel : PageBase
     {
         ArgumentOutOfRangeException.ThrowIfNegative(time);
         var arrow = WaitHelper.WaitForDisplayElement(RightArrow);
-        var action = new Actions(DriverContainer.Driver).MoveToElement(arrow);
+        var action = new Actions(Driver).MoveToElement(arrow);
         for (int i = 0; i < time; i++)
         {
             action.Click()

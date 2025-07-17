@@ -1,58 +1,60 @@
 ﻿using Business.ApplicationInterface;
 using Core;
+using OpenQA.Selenium;
 
 namespace Business.Business;
 
-public class HomeContext
+public class HomeContext : ContextBase
 {
     private readonly HomePage page;
 
-    private HomeContext()
+    private HomeContext(IWebDriver? driver)
+        : base(driver)
     {
-        page = new HomePage();
+        page = new HomePage(Driver);
     }
 
-    public static HomeContext Open()
+    public static HomeContext Open(IWebDriver? driver)
     {
-        var context = new HomeContext().AcceptCookies();
+        var context = new HomeContext(driver).AcceptCookies();
         return context;
     }
 
     public CareersContext GoToCareers()
     {
-        PageBase.Click(Header.Carriers);
-        LogHelper.Info("Careers page is open");
-        return new CareersContext();
+        page.Click(Header.Carriers);
+        Log.Info("Careers page is open");
+        return new CareersContext(Driver);
     }
 
     public AboutContext GoToAbout()
     {
-        PageBase.Click(Header.About);
-        LogHelper.Info("About page is open");
-        return new AboutContext();
+        page.Click(Header.About);
+        Log.Info("About page is open");
+        return new AboutContext(Driver);
     }
 
     public InsightsContext GoToInsights()
     {
-        PageBase.Click(Header.Insights);
-        LogHelper.Info("Insights page is open");
-        return new InsightsContext();
+        page.Click(Header.Insights);
+        Log.Info("Insights page is open");
+        return new InsightsContext(Driver);
     }
 
     public SearchContext SearchOnHeader(string searchTerms)
     {
-        PageBase.Click(Header.SearchIcon);
+        page.Click(Header.SearchIcon);
         page.SetField(Header.SearchInput, searchTerms);
-        LogHelper.Info($"Search field is set to {searchTerms}");
-        PageBase.Click(Header.FindButton);
-        LogHelper.Info("Click on FIND button.");
-        return new SearchContext();
+        Log.Info($"Search field is set to {searchTerms}");
+        page.Click(Header.FindButton);
+        Log.Info("Click on FIND button.");
+        return new SearchContext(Driver);
     }
 
     private HomeContext AcceptCookies()
     {
         page.ClickWithWait(HomePage.AcceptCookies);
-        LogHelper.Info("Click on Accept Cookies button.");
+        Log.Info("Click on Accept Cookies button.");
         return this;
     }
 }

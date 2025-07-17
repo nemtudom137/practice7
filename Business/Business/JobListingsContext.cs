@@ -1,28 +1,30 @@
 ﻿using Business.ApplicationInterface;
 using Core;
+using OpenQA.Selenium;
 
 namespace Business.Business;
 
-public class JobListingsContext
+public class JobListingsContext : ContextBase
 {
     private readonly JobListingsPage page;
 
-    public JobListingsContext()
+    public JobListingsContext(IWebDriver? driver)
+        : base(driver)
     {
-        page = new JobListingsPage();
+        page = new JobListingsPage(Driver);
     }
 
     public JobListingsContext SortResultByDate()
     {
         page.ClickWithWait(JobListingsPage.SortByDate);
-        LogHelper.Info("Click on Sort By DATE.");
+        Log.Info("Click on Sort By DATE.");
         return this;
     }
 
     public JobDetailContext ClicOnTheLastApplyButton()
     {
         page.ClickWithWait(JobListingsPage.LastApplyButton);
-        LogHelper.Info("Click on the last VIEW AND APPLY.");
-        return new JobDetailContext();
+        Log.Info("Click on the last VIEW AND APPLY.");
+        return new JobDetailContext(Driver);
     }
 }

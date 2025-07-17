@@ -7,30 +7,47 @@ namespace Business.ApplicationInterface;
 
 public abstract class PageBase
 {
-    protected PageBase()
+    public static readonly Logger Log = LogManager.GetCurrentClassLogger();
+
+    protected PageBase(IWebDriver driver)
+        : this(driver, TimeSpan.FromSeconds(ConfigurationManager.Test.ExplicitTimeoutSec))
     {
-        WaitHelper = new WaitHelper();
     }
 
-    protected PageBase(TimeSpan timeout)
+    protected PageBase(IWebDriver driver, TimeSpan timeout)
     {
-        WaitHelper = new WaitHelper(timeout);
+        Driver = driver ?? throw new ArgumentNullException(nameof(driver));
+        ArgumentOutOfRangeException.ThrowIfLessThanOrEqual(timeout, TimeSpan.Zero);
+        WaitHelper = new WaitHelper(Driver, timeout);
     }
 
     public WaitHelper WaitHelper { get; init; }
 
-    public static void Click(By by)
+    protected IWebDriver Driver { get; init; }
+
+    public void Click(By by)
     {
-        DriverContainer.Driver.FindElement(by).Click();
+        Driver.FindElement(by).Click();
+        Log.Trace($"Element located by {by} is clicked");
     }
 
-    public static void ScrollToElement(By by)
+    public void ScrollToElement(By by)
     {
-        var element = DriverContainer.Driver.FindElement(by);
-        new Actions(DriverContainer.Driver).ScrollToElement(element).Perform();
+        var element = Driver.FindElement(by);
+        ((IJavaScriptExecutor)Driver).ExecuteScript("arguments[0].scrollIntoView(true);", element);
+        new Actions(Driver).ScrollToElement(element).Perform();
+        Log.Trace($"Scrolled to element located by {by}");
     }
 
-    public void ClickWithWait(By by) => WaitHelper.ClickOnElement(by);
+    public void ClickWithWait(By by)
+    {
+        WaitHelper.ClickOnElement(by);
+        Log.Trace($"Element located by {by} is clicked");
+    }
 
-    public void SetField(By by, string input) => WaitHelper.WaitForDisplayElement(by).SendKeys(input);
+    public void SetField(By by, string input)
+    {
+        WaitHelper.WaitForDisplayElement(by).SendKeys(input);
+        Log.Trace($"Field located by {by} is filed with {input}");
+    }
 }

@@ -30,7 +30,7 @@ public class SearchPage : PageBase
                 .Click()
                 .Perform();
 
-                Log.Trace($"Element located by {ViewMoreButton} is clicked");
+                LogHelper.Log.Trace($"Element located by {ViewMoreButton} is clicked");
             }
             catch (ElementNotInteractableException)
             {
@@ -58,7 +58,7 @@ public class SearchPage : PageBase
                 .KeyUp(Keys.Control)
                 .Perform();
 
-            Log.Trace($"Scroll to the bottom.");
+            LogHelper.Log.Trace($"Scroll to the bottom.");
 
             WaitHelper.Wait.Until(d =>
             {

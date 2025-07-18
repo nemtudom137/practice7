@@ -1,5 +1,6 @@
 ﻿using Business.ApplicationInterface;
 using Core;
+using NLog;
 using NUnit.Framework;
 using OpenQA.Selenium;
 using TechTalk.SpecFlow;
@@ -20,19 +21,21 @@ public class AboutPageSteps
     public void GivenIScrollDownToTheEPAMAtAGlanceSection()
     {
         page.ScrollToElement(AboutPage.EpamAtAGlance);
+        LogHelper.Log.Info("Scroll down to the EPAM at a Glance section.");
     }
 
     [When(@"I click on the Download button")]
     public void WhenIClickOnTheDownloadButton()
     {
-        page.ScrollToElement(AboutPage.EpamAtAGlance);
         page.Click(AboutPage.DownloadButton);
+        LogHelper.Log.Info("Click on DOWNLOAD button.");
     }
 
     [Then(@"A file named '(.*)' is downloaded")]
     public void ThenAFileNamedIsDownloaded(string fileName)
     {
         page.WaitForDownload();
+        LogHelper.Log.Info("File downloaded.");
 
         var downloadedFiles = Directory.GetFiles(ConfigurationManager.Test.DownloadDirectory);
 

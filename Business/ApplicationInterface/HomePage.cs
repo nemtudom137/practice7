@@ -15,7 +15,6 @@ public class HomePage : PageBase
     public void Open()
     {
         Driver.Navigate().GoToUrl(ConfigurationManager.Test.Url);
-        Log.Trace($"Navigate to {ConfigurationManager.Test.Url}");
+        LogHelper.Log.Trace($"Navigate to {ConfigurationManager.Test.Url}");
     }
-
 }

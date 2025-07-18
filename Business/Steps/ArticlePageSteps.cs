@@ -1,4 +1,5 @@
 ﻿using Business.ApplicationInterface;
+using NLog;
 using NUnit.Framework;
 using OpenQA.Selenium;
 using TechTalk.SpecFlow;

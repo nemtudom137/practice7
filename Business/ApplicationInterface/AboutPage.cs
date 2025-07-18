@@ -1,4 +1,5 @@
-﻿using OpenQA.Selenium;
+﻿using Core;
+using OpenQA.Selenium;
 
 namespace Business.ApplicationInterface;
 
@@ -14,7 +15,7 @@ public class AboutPage : PageBase
 
     public void WaitForDownload()
     {
-        Log.Trace("File download started.");
+        LogHelper.Log.Trace("File download started.");
         WaitHelper.WaitForDowloadedFile();
     }
 }

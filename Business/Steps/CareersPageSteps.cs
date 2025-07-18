@@ -1,4 +1,6 @@
 ﻿using Business.ApplicationInterface;
+using Core;
+using NLog;
 using OpenQA.Selenium;
 using TechTalk.SpecFlow;
 
@@ -18,6 +20,7 @@ public class CareersPageSteps
     public void WhenIEnterTheTextIntoTheSearchField(string language)
     {
         page.SetField(CareersPage.Keyword, language);
+        LogHelper.Log.Info($"Keyword field is set to {language}");
     }
 
     [When(@"I set the location to '(.*)' '(.*)'")]
@@ -26,10 +29,12 @@ public class CareersPageSteps
         if (string.IsNullOrEmpty(city))
         {
             page.SetLocation(location);
+            LogHelper.Log.Info($"Location is set to {location}");
         }
         else
         {
             page.SetLocation(location, city);
+            LogHelper.Log.Info($"Location is set to {location} and {city}");
         }
     }
 
@@ -37,11 +42,13 @@ public class CareersPageSteps
     public void WhenIChoseRemote()
     {
         page.ChooseRemote();
+        LogHelper.Log.Info($"Remote is chosen");
     }
 
     [When(@"I click on Find button")]
     public void WhenIClickOnFindButton()
     {
         page.Click(CareersPage.FindButton);
+        LogHelper.Log.Info("Click on FIND button.");
     }
 }

@@ -36,7 +36,7 @@ public class CareersPage : PageBase
            .Click()
            .Perform();
 
-        Log.Trace($"Element located by {remote} is clicked");
+        LogHelper.Log.Trace($"Element located by {remote} is clicked");
     }
 
     private static By GetLocationOption(string location) => By.XPath($"//li[contains(text(),'{location}')]");

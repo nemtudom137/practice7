@@ -1,4 +1,4 @@
-﻿namespace Business.Data;
+﻿namespace Tests;
 
 public static class TestData
 {

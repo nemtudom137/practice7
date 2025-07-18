@@ -50,4 +50,11 @@ public abstract class PageBase
         WaitHelper.WaitForDisplayElement(by).SendKeys(input);
         Log.Trace($"Field located by {by} is filed with {input}");
     }
+
+    public void HoverOverElement(By by)
+    {
+        var element = Driver.FindElement(by);
+        new Actions(Driver).MoveToElement(element).Perform();
+        Log.Trace($"Hovering over element located by {by}");
+    }
 }

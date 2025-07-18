@@ -2,7 +2,7 @@
 using OpenQA.Selenium;
 using OpenQA.Selenium.Interactions;
 
-namespace Business.ApplicationInterface;
+namespace Business.ApplicationInterface.Sections;
 
 public class Carousel : PageBase
 {

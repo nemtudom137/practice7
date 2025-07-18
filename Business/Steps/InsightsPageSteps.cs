@@ -1,4 +1,5 @@
 ﻿using Business.ApplicationInterface;
+using Core;
 using OpenQA.Selenium;
 using TechTalk.SpecFlow;
 
@@ -20,17 +21,21 @@ public class InsightsPageSteps
     public void WhenISwipeTheTopmostCarousel(int n)
     {
         page.TopmostCarousel.Swipe(n);
+        LogHelper.Log.Info($"Swipe {n} times on the carousel.");
     }
 
     [When(@"I note the name of the article")]
     public void WhenINoteTheNameOfTheArticle()
     {
-        scenarioContext.Set<string>(page.TopmostCarousel.GetActivArticleTitle(), "slideTitle");
+        var title = page.TopmostCarousel.GetActivArticleTitle();
+        LogHelper.Log.Info($"Title on the active slide: {title}");
+        scenarioContext.Set<string>(title, "slideTitle");
     }
 
     [When(@"I click on the Read More button")]
     public void WhenIClickOnTheReadMoreButton()
     {
         page.ClickWithWait(page.TopmostCarousel.ActiveSlideContetnLink);
+        LogHelper.Log.Info("Click Read More button on the slide.");
     }
 }

@@ -1,7 +1,6 @@
 ﻿using BoDi;
 using Core;
 using Core.DriverFactory;
-using NLog;
 using NUnit.Framework.Interfaces;
 using OpenQA.Selenium;
 using TechTalk.SpecFlow;
@@ -11,7 +10,6 @@ namespace Tests;
 [Binding]
 public sealed class Hooks
 {
-    public static readonly Logger Log = LogManager.GetCurrentClassLogger();
     private readonly IObjectContainer objectContainer;
     private IWebDriver? driver;
 
@@ -26,7 +24,7 @@ public sealed class Hooks
         driver = DriverCreator.CreateDriver();
         objectContainer.RegisterInstanceAs(driver);
         ConfigurationManager.SetScreenshotFolder();
-        Log.Info($"{TestContext.CurrentContext.Test.MethodName} starts.");
+        LogHelper.Log.Info($"{TestContext.CurrentContext.Test.MethodName} starts.");
     }
 
     [BeforeScenario("@download")]
@@ -40,7 +38,7 @@ public sealed class Hooks
     {
         var testName = TestContext.CurrentContext.Test.MethodName ?? "Unknown";
         var outcome = TestContext.CurrentContext.Result.Outcome.Status;
-        Log.Info($"{testName} ends with outcome {outcome}.");
+        LogHelper.Log.Info($"{testName} ends with outcome {outcome}.");
 
         if (outcome == TestStatus.Failed)
         {

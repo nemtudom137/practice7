@@ -1,4 +1,6 @@
 ﻿using Business.ApplicationInterface;
+using Core;
+using NLog;
 using OpenQA.Selenium;
 using TechTalk.SpecFlow;
 
@@ -18,11 +20,13 @@ public class JobListingsSteps
     public void WhenISortTheResultsByDate()
     {
         page.ClickWithWait(JobListingsPage.SortByDate);
+        LogHelper.Log.Info("Click on Sort By DATE.");
     }
 
     [When(@"I click on the last Apply button")]
     public void WhenIClickOnTheLastApplyButton()
     {
         page.ClickWithWait(JobListingsPage.LastApplyButton);
+        LogHelper.Log.Info("Click on the last VIEW AND APPLY.");
     }
 }

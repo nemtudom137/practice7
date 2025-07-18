@@ -121,6 +121,6 @@ public abstract class PageBase
     {
         var element = Driver.FindElement(by);
         new Actions(Driver).MoveToElement(element).Perform();
-        Log.Trace($"Hovering over element located by {by}");
+        LogHelper.Log.Trace($"Hovering over element located by {by}");
     }
 }

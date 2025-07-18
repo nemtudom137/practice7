@@ -117,5 +117,10 @@ public abstract class PageBase
         return text;
     }
 
-    public void WaitForDowloadedFile() => WaitHelper.WaitForDowloadedFile();
+    public void HoverOverElement(By by)
+    {
+        var element = Driver.FindElement(by);
+        new Actions(Driver).MoveToElement(element).Perform();
+        Log.Trace($"Hovering over element located by {by}");
+    }
 }

@@ -1,4 +1,5 @@
-﻿using OpenQA.Selenium;
+﻿using Business.ApplicationInterface.Sections;
+using OpenQA.Selenium;
 
 namespace Business.ApplicationInterface;
 

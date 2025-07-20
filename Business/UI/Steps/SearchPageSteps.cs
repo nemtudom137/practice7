@@ -11,9 +11,9 @@ public class SearchPageSteps
 {
     private readonly SearchPage page;
 
-    public SearchPageSteps(IWebDriver driver)
+    public SearchPageSteps()
     {
-        page = new SearchPage(driver);
+        page = new SearchPage();
     }
 
     [Then(@"All the elements of the search results contain '(.*)'")]

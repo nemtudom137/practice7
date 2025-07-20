@@ -9,8 +9,8 @@ public class Carousel : PageBase
 {
     private readonly string root;
 
-    internal Carousel(IWebDriver driver, string root)
-        : base(driver)
+    internal Carousel(string root)
+        : base()
     {
         this.root = root;
     }

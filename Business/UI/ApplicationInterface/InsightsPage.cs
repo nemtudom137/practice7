@@ -7,10 +7,10 @@ public class InsightsPage : PageBase
 {
     private static readonly string FirstCarousel = "//div[@class='slider section'][1]";
 
-    internal InsightsPage(IWebDriver driver)
-         : base(driver)
+    internal InsightsPage()
+         : base()
     {
-        TopmostCarousel = new Carousel(Driver, FirstCarousel);
+        TopmostCarousel = new Carousel(FirstCarousel);
     }
 
     public Carousel TopmostCarousel { get; init; }

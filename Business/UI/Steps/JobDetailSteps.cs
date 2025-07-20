@@ -11,9 +11,9 @@ public class JobDetailSteps
 {
     private readonly JobDetailPage page;
 
-    public JobDetailSteps(IWebDriver driver)
+    public JobDetailSteps()
     {
-        page = new JobDetailPage(driver);
+        page = new JobDetailPage();
     }
 
     [Then(@"The '(.*)' is on the resulting page")]

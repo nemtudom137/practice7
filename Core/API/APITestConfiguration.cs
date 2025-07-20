@@ -1,6 +1,6 @@
 ﻿namespace Core.API;
 
-public class APITestConfiguration
+public class ApiTestConfiguration
 {
-    public string Url { get; set; }
+    public string? Url { get; set; }
 }

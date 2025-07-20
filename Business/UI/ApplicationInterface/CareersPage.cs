@@ -11,11 +11,6 @@ public class CareersPage : PageBase
     private static readonly By Locations = By.CssSelector(".recruiting-search__location span[role='combobox']");
     private static readonly By RemoteOption = By.CssSelector(".job-search__filter-list input[name='remote']");
 
-    internal CareersPage(IWebDriver driver)
-       : base(driver)
-    {
-    }
-
     public void SetLocation(string location)
     {
         Click(Locations);

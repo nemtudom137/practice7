@@ -8,21 +8,20 @@ namespace Business.UI.ApplicationInterface;
 
 public abstract class PageBase
 {
-    protected PageBase(IWebDriver driver)
-        : this(driver, TimeSpan.FromSeconds(ConfigurationManager.UI.ExplicitTimeoutSec))
+    protected PageBase()
+        : this(TimeSpan.FromSeconds(ConfigurationManager.UI.ExplicitTimeoutSec))
     {
     }
 
-    protected PageBase(IWebDriver driver, TimeSpan timeout)
+    protected PageBase(TimeSpan timeout)
     {
-        Driver = driver ?? throw new ArgumentNullException(nameof(driver));
         ArgumentOutOfRangeException.ThrowIfLessThanOrEqual(timeout, TimeSpan.Zero);
         WaitHelper = new WaitHelper(Driver, timeout);
     }
 
     public WaitHelper WaitHelper { get; init; }
 
-    protected IWebDriver Driver { get; init; }
+    protected IWebDriver Driver => DriverContainer.GetDriver();
 
     public void Click(By by)
     {

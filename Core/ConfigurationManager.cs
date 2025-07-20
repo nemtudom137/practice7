@@ -1,25 +1,38 @@
-﻿using Microsoft.Extensions.Configuration;
-using NLog;
+﻿using Core.API;
+using Core.UI;
+using Microsoft.Extensions.Configuration;
 
 namespace Core;
 
 public static class ConfigurationManager
 {
-    private static readonly Logger Log = LogManager.GetCurrentClassLogger();
-    private static TestConfiguration? test;
+    private static IConfigurationRoot config = GetConfiguration();
+    private static UITestConfiguration? ui;
+    private static APITestConfiguration? api;
 
-    public static TestConfiguration Test
+    public static UITestConfiguration UI
     {
         get
         {
-            test ??= GetConfiguration();
-            return test;
+            ui ??= config.GetSection("UI").Get<UITestConfiguration>();
+            LogHelper.Log.Info($"Config: {ui?.Url}, {ui?.Browser}, headless: {ui?.Headless}, timeout: {ui?.ExplicitTimeoutSec}, download: {ui?.DownloadDirectory}, screenshots: {ui?.ScreenshotDirectory}");
+            return ui ?? throw new ArgumentException(nameof(UI));
+        }
+    }
+
+    public static APITestConfiguration API
+    {
+        get
+        {
+            api ??= config.GetSection("API").Get<APITestConfiguration>();
+            LogHelper.Log.Info($"Config: {api?.Url}");
+            return api ?? throw new ArgumentException(nameof(API));
         }
     }
 
     public static void SetDownloadFolder()
     {
-        var download = Test.DownloadDirectory;
+        var download = UI.DownloadDirectory;
         if (Directory.Exists(download))
         {
             Directory.Delete(download, true);
@@ -30,7 +43,7 @@ public static class ConfigurationManager
 
     public static void SetScreenshotFolder()
     {
-        var screenshots = Test.ScreenshotDirectory;
+        var screenshots = UI.ScreenshotDirectory;
 
         if (!Directory.Exists(screenshots))
         {
@@ -38,17 +51,11 @@ public static class ConfigurationManager
         }
     }
 
-    private static TestConfiguration GetConfiguration()
+    private static IConfigurationRoot GetConfiguration()
     {
-        var config = new ConfigurationBuilder()
+        return new ConfigurationBuilder()
            .SetBasePath(Directory.GetCurrentDirectory())
            .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
            .Build();
-
-        var testConfig = config.GetSection("Test").Get<TestConfiguration>();
-
-        Log.Info($"Config: {testConfig?.Url}, {testConfig?.Browser}, headless: {testConfig?.Headless}, timeout: {testConfig?.ExplicitTimeoutSec}, download: {testConfig?.DownloadDirectory}, screenshots: {testConfig?.ScreenshotDirectory}");
-
-        return testConfig ?? throw new ArgumentException(nameof(testConfig));
     }
 }

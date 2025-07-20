@@ -1,4 +1,5 @@
-﻿Feature: Global search
+﻿@UI
+Feature: Global search
 As an EPAM website user  
 I want to perform a search on the main page     
 

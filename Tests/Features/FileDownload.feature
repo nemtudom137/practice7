@@ -1,4 +1,5 @@
-﻿@download
+﻿@UI
+@download
 Feature: File download
 As an EPAM website user  
 I want to download some files    

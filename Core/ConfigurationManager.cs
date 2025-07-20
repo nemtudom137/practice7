@@ -1,12 +1,17 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using Core.API;
+using Core.UI;
+using Microsoft.Extensions.Configuration;
+using System;
 
 namespace Core;
 
 public static class ConfigurationManager
 {
     private static readonly string UISection = "UI";
+    private static readonly string APISection = "API";
     private static IConfigurationRoot config = GetConfiguration();
     private static UiTestConfiguration? ui;
+    private static APITestConfiguration? api;
 
     public static UiTestConfiguration UI
     {
@@ -19,6 +24,20 @@ public static class ConfigurationManager
             }
 
             return ui ?? throw new ArgumentException(nameof(UI));
+        }
+    }
+
+    public static APITestConfiguration API
+    {
+        get
+        {
+            if (api is null)
+            {
+                ui = config.GetSection(APISection).Get<UiTestConfiguration>();
+                LogHelper.Log.Info($"Config: {api?.Url}");
+            }
+            
+            return api ?? throw new ArgumentException(nameof(API));
         }
     }
 

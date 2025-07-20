@@ -1,4 +1,5 @@
-﻿Feature: Carrier search
+﻿@UI
+Feature: Carrier search
 As an EPAM website user  
 I want to perform a search on the carriers page    
 

@@ -1,4 +1,5 @@
-﻿Feature: Carousel navigation
+﻿@UI
+Feature: Carousel navigation
 As an EPAM website user  
 I want to see the articles presented on carousels   
 

@@ -27,7 +27,7 @@ public static class ConfigurationManager
         }
     }
 
-    public static APITestConfiguration API
+    public static ApiTestConfiguration API
     {
         get
         {

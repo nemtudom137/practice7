@@ -12,9 +12,9 @@ public class ArticlePageSteps
     private readonly ArticlePage page;
     private readonly ScenarioContext scenarioContext;
 
-    public ArticlePageSteps(IWebDriver driver, ScenarioContext scenarioContext)
+    public ArticlePageSteps(ScenarioContext scenarioContext)
     {
-        page = new ArticlePage(driver);
+        page = new ArticlePage();
         this.scenarioContext = scenarioContext;
     }
 

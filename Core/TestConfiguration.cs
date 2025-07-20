@@ -1,8 +1,8 @@
 ﻿namespace Core;
 
-public class TestConfiguration
+public class UiTestConfiguration
 {
-    public string Url { get; set; }
+    public string? Url { get; set; }
 
     public BrowserType Browser { get; set; }
 
@@ -10,11 +10,9 @@ public class TestConfiguration
 
     public int ExplicitTimeoutSec { get; set; }
 
-    public string TestDirectory { get; set; }
+    public string? TestDirectory { get; set; }
 
-    public string DownloadDirectory => Path.Combine(Directory.GetCurrentDirectory(), TestDirectory, "Download");
+    public string DownloadDirectory => Path.Combine(Directory.GetCurrentDirectory(), TestDirectory ?? string.Empty, "Download");
 
-    public string ScreenshotDirectory => Path.Combine(Directory.GetCurrentDirectory(), TestDirectory, "Screenshot");
-
-
+    public string ScreenshotDirectory => Path.Combine(Directory.GetCurrentDirectory(), TestDirectory ?? string.Empty, "Screenshot");
 }

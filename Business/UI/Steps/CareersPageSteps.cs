@@ -1,6 +1,5 @@
 ﻿using Business.UI.ApplicationInterface;
 using Core;
-using NLog;
 using OpenQA.Selenium;
 using TechTalk.SpecFlow;
 
@@ -11,9 +10,9 @@ public class CareersPageSteps
 {
     private readonly CareersPage page;
 
-    public CareersPageSteps(IWebDriver driver)
+    public CareersPageSteps()
     {
-        page = new CareersPage(driver);
+        page = new CareersPage();
     }
 
     [When(@"I enter the text '(.*)' into the search field")]

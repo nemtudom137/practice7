@@ -4,15 +4,14 @@ namespace Business.API.ApplicationInterface;
 
 public abstract class BaseClient
 {
-    protected BaseClient(IApiClient client, IRequestBuilder builder)
+    protected BaseClient(IRequestBuilder builder)
     {
-        JsonPlaceholderClient = client;
         Builder = builder;
     }
 
-    protected abstract string Resource { get; }
+    protected static IApiClient JsonPlaceholderClient => ApiClientContainer.GetClient();
 
-    protected IApiClient JsonPlaceholderClient { get; init; }
+    protected abstract string Resource { get; }
 
     protected IRequestBuilder Builder { get; init; }
 }

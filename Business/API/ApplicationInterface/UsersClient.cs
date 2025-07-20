@@ -6,8 +6,8 @@ namespace Core.API;
 
 public class UsersClient : BaseClient
 {
-    public UsersClient(IApiClient client, IRequestBuilder builder)
-        : base(client, builder)
+    public UsersClient(IRequestBuilder builder)
+        : base(builder)
     {
     }
 

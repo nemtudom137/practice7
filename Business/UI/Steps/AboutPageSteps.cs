@@ -12,9 +12,9 @@ public class AboutPageSteps
 {
     private readonly AboutPage page;
 
-    public AboutPageSteps(IWebDriver driver)
+    public AboutPageSteps()
     {
-        page = new AboutPage(driver);
+        page = new AboutPage();
     }
 
     [Given(@"I scroll down to the EPAM at a Glance section")]

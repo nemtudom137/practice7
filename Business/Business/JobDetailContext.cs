@@ -13,5 +13,5 @@ public class JobDetailContext : ContextBase
         page = new JobDetailPage(Driver);
     }
 
-    public bool IsLanguagePresent(string language) => page.WaitHelper.IsElementPresent(JobDetailPage.OccurancesOfLanguage(language));
+    public bool IsLanguagePresent(string language) => page.IsElementPresent(JobDetailPage.OccurancesOfLanguage(language));
 }

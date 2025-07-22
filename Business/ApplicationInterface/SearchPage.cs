@@ -1,4 +1,5 @@
-﻿using OpenQA.Selenium;
+﻿using Core;
+using OpenQA.Selenium;
 
 namespace Business.ApplicationInterface;
 
@@ -21,7 +22,7 @@ public class SearchPage : PageBase
             try
             {
                 ClickOnDynamicElement(ViewMoreButton);
-                Log.Trace($"Element located by {ViewMoreButton} is clicked");
+                LogHelper.Log.Trace($"Element located by {ViewMoreButton} is clicked");
             }
             catch (ElementNotInteractableException)
             {

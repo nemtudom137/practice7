@@ -15,6 +15,4 @@ public class UiTestConfiguration
     public string DownloadDirectory => Path.Combine(Directory.GetCurrentDirectory(), TestDirectory ?? string.Empty, "Download");
 
     public string ScreenshotDirectory => Path.Combine(Directory.GetCurrentDirectory(), TestDirectory ?? string.Empty, "Screenshot");
-
-
 }

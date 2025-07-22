@@ -23,14 +23,14 @@ public class TestsBase
     {
         Driver = DriverCreator.CreateDriver();
         FileHelper.SetDownloadFolder();
-        Log.Info($"{TestInfoHelper.GetTestName()} starts.");
+        Log.Info($"Test starts.");
     }
 
     [TearDown]
     public void TearDown()
     {
         var outcome = TestContext.CurrentContext.Result.Outcome.Status;
-        Log.Info($"{TestInfoHelper.GetTestName()} ends with outcome {outcome}.");
+        Log.Info($"Test ends with outcome {outcome}.");
 
         if (outcome == TestStatus.Failed)
         {

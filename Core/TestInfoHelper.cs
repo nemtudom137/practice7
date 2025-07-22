@@ -15,7 +15,7 @@ public static class TestInfoHelper
         }
         else
         {
-            string argString = string.Join("-", arguments);
+            string argString = string.Join("_", arguments.Where(x => x is not null));
             testName = $"{test}_{argString}";
         }
 

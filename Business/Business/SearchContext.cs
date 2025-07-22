@@ -1,4 +1,5 @@
 ﻿using Business.ApplicationInterface;
+using Core;
 using OpenQA.Selenium;
 
 namespace Business.Business;
@@ -16,7 +17,8 @@ public class SearchContext : ContextBase
     public List<string> GetSearchResults()
     {
         var results = page.GetSearchResults();
-        Log.Info($"{results.Count} search results was found.");
+        LogHelper.Log.Info($"{results.Count} search results was found.");
+
         return results;
     }
 }

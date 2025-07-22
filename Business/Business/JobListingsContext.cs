@@ -1,4 +1,5 @@
 ﻿using Business.ApplicationInterface;
+using Core;
 using OpenQA.Selenium;
 
 namespace Business.Business;
@@ -16,14 +17,16 @@ public class JobListingsContext : ContextBase
     public JobListingsContext SortResultByDate()
     {
         page.Click(JobListingsPage.SortByDate);
-        Log.Info("Click on Sort By DATE.");
+        LogHelper.Log.Info("Click on Sort By DATE.");
+
         return this;
     }
 
     public JobDetailContext ClicOnTheLastApplyButton()
     {
         page.Click(JobListingsPage.LastApplyButton);
-        Log.Info("Click on the last VIEW AND APPLY.");
+        LogHelper.Log.Info("Click on the last VIEW AND APPLY.");
+
         return new JobDetailContext(Driver);
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Business.ApplicationInterface;
+using Core;
 using OpenQA.Selenium;
 
 namespace Business.Business;
@@ -16,12 +17,12 @@ public class AboutContext : ContextBase
     public void DownloadCompanyOverview()
     {
         page.ScrollToElement(AboutPage.EpamAtAGlance);
-        Log.Info("Scroll down to the EPAM at a Glance section.");
+        LogHelper.Log.Info("Scroll down to the EPAM at a Glance section.");
 
         page.Click(AboutPage.DownloadButton);
-        Log.Info("Click on DOWNLOAD button.");
+        LogHelper.Log.Info("Click on DOWNLOAD button.");
 
-        page.WaitHelper.WaitForDowloadedFile();
-        Log.Info("File downloaded.");
+        page.WaitForDowloadedFile();
+        LogHelper.Log.Info("File downloaded.");
     }
 }

@@ -17,7 +17,8 @@ public class InsightsContext : ContextBase
     public ArticleContext GoToSlidelArticle()
     {
         page.Click(page.TopmostCarousel.ActiveSlideContetnLink);
-        Log.Info("Click Read More button on the slide.");
+        LogHelper.Log.Info("Click Read More button on the slide.");
+
         return new ArticleContext(Driver);
     }
 
@@ -25,14 +26,16 @@ public class InsightsContext : ContextBase
     {
         var carousel = page.TopmostCarousel;
         var title = page.GetElementText(carousel.ActiveSlideText);
-        Log.Info($"Title on the active slide: {title}");
+        LogHelper.Log.Info($"Title on the active slide: {title}");
+
         return title;
     }
 
     public InsightsContext SwipeTheTopmostCarousel(int times)
     {
         page.TopmostCarousel.Swipe(times);
-        Log.Info($"Swipe {times} times on the carousel.");
+        LogHelper.Log.Info($"Swipe {times} times on the carousel.");
+
         return this;
     }
 }

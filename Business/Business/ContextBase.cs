@@ -5,8 +5,6 @@ namespace Business.Business;
 
 public abstract class ContextBase
 {
-    public static readonly Logger Log = LogManager.GetCurrentClassLogger();
-
     protected ContextBase(IWebDriver? driver)
     {
         Driver = driver ?? throw new ArgumentNullException(nameof(driver));

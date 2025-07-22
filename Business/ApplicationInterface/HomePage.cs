@@ -15,6 +15,6 @@ public class HomePage : PageBase
     public void Open()
     {
         Driver.Navigate().GoToUrl(ConfigurationManager.UI.Url ?? throw new ArgumentException(nameof(ConfigurationManager.UI.Url)));
-        Log.Trace($"Navigate to {ConfigurationManager.UI.Url}");
+        LogHelper.Log.Trace($"Navigate to {ConfigurationManager.UI.Url}");
     }
 }

@@ -8,6 +8,11 @@ public class SearchPage : PageBase
     private static readonly By SearchResultItem = By.XPath("//article[@class='search-results__item']");
     private static readonly By ViewMoreButton = By.ClassName("search-results__view-more");
 
+    internal SearchPage(IWebDriver driver)
+        : base(driver)
+    {
+    }
+
     public List<string> GetSearchResults()
     {
         while (true)

@@ -11,9 +11,9 @@ public class HomePageSteps
 {
     private readonly HomePage page;
 
-    public HomePageSteps()
+    public HomePageSteps(IWebDriver driver)
     {
-        page = new HomePage();
+        page = new HomePage(driver);
     }
 
     [Given(@"I navigate to the EPAM website")]

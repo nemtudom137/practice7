@@ -10,9 +10,9 @@ public class JobListingsSteps
 {
     private readonly JobListingsPage page;
 
-    public JobListingsSteps()
+    public JobListingsSteps(IWebDriver driver)
     {
-        page = new JobListingsPage();
+        page = new JobListingsPage(driver);
     }
 
     [When(@"I sort the results by date")]

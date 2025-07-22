@@ -4,10 +4,11 @@ using OpenQA.Selenium;
 
 namespace Core.UI;
 
-public static class ScreenshotMaker
+public class ScreenshotMaker
 {
     private static readonly Logger Log = LogManager.GetCurrentClassLogger();
     private static readonly ImageFormat ImageFormat = ImageFormat.Png;
+    private readonly IWebDriver driver;
 
     public ScreenshotMaker(IWebDriver? driver)
     {

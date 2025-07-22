@@ -2,10 +2,10 @@
 using Core;
 using Core.API;
 using Core.UI;
+using Core.UI.DriverFactory;
 using NUnit.Framework.Interfaces;
+using OpenQA.Selenium;
 using TechTalk.SpecFlow;
-
-[assembly: Parallelizable(ParallelScope.Fixtures)]
 
 namespace Tests;
 
@@ -13,6 +13,8 @@ namespace Tests;
 public sealed class Hooks
 {
     private readonly IObjectContainer objectContainer;
+    private IWebDriver? driver;
+    private IApiClient? client;
 
     public Hooks(IObjectContainer objectContainer)
     {
@@ -31,14 +33,15 @@ public sealed class Hooks
     [BeforeScenario("@API")]
     public void BeforeAPIScenario()
     {
-        ApiClientContainer.InitClient(new JsonPlaceholderClient());
+        client = new JsonPlaceholderClient();
+        objectContainer.RegisterInstanceAs(client);
         objectContainer.RegisterInstanceAs((IRequestBuilder)new RequestBuilder());
     }
 
     [BeforeScenario("@download")]
     public void BeforeScenarioWithDownload()
     {
-        FileHelper.SetDownloadFolder();
+        ConfigurationManager.SetDownloadFolder();
     }
 
     [BeforeScenario]
@@ -55,13 +58,13 @@ public sealed class Hooks
             new ScreenshotMaker(driver).TakeBrowserScreenshot();
         }
 
-        DriverContainer.CloseDriver();
+        driver?.Quit();
     }
 
     [AfterScenario("@API")]
     public void AfterAPIScenario()
     {
-        ApiClientContainer.CloseClient();
+        client?.Dispose();
     }
 
     [AfterScenario]

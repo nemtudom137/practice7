@@ -15,11 +15,13 @@ public class ScreenshotMaker
         this.driver = driver ?? throw new ArgumentNullException(nameof(driver));
     }
 
-    public void TakeBrowserScreenshot(string testName, params object?[] arguments)
+    public void TakeBrowserScreenshot()
     {
         try
         {
-            var path = Path.Combine(ConfigurationManager.UI.ScreenshotDirectory, ScreenshotName(testName, arguments));
+            var fileName = $"{TestInfoHelper.GetTestName()}_{DateTime.Now:yyyy-MM-dd_hh-mm-ss-fff}.{ImageFormat}";
+            var path = Path.Combine(ConfigurationManager.UI.ScreenshotDirectory, fileName);
+
             Screenshot screenshot = ((ITakesScreenshot)driver).GetScreenshot();
             screenshot.SaveAsFile(path);
             Log.Info($"Screenshot saved: {path}");
@@ -28,22 +30,5 @@ public class ScreenshotMaker
         {
             Log.Error($"Failed to take screenshot: {ex.Message}", ex);
         }
-    }
-
-    private static string ScreenshotName(string testName, params object?[] arguments)
-    {
-        string fileName;
-        var time = DateTime.Now.ToString("yyyy-MM-dd_hh-mm-ss-fff");
-        if (arguments is null || !arguments.Any(x => x is not null))
-        {
-            fileName = $"{testName}_{time}.{ImageFormat}";
-        }
-        else
-        {
-            string argString = string.Join("-", arguments);
-            fileName = $"{testName}_{argString}_{time}.{ImageFormat}";
-        }
-
-        return fileName;
     }
 }

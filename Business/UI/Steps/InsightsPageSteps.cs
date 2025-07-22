@@ -29,7 +29,7 @@ public class InsightsPageSteps
     {
         var title = page.TopmostCarousel.GetActivArticleTitle();
         LogHelper.Log.Info($"Title on the active slide: {title}");
-        scenarioContext.Set(title, "slideTitle");
+        scenarioContext.Set(title, TestInfoHelper.GetTestName());
     }
 
     [When(@"I click on the Read More button")]

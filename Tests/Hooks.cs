@@ -7,6 +7,8 @@ using NUnit.Framework.Interfaces;
 using OpenQA.Selenium;
 using TechTalk.SpecFlow;
 
+[assembly: Parallelizable(ParallelScope.Fixtures)]
+
 namespace Tests;
 
 [Binding]
@@ -26,7 +28,7 @@ public sealed class Hooks
     {
         driver = DriverCreator.CreateDriver();
         objectContainer.RegisterInstanceAs(driver);
-        ConfigurationManager.SetScreenshotFolder();
+        FileHelper.SetScreenshotFolder();
     }
 
     [BeforeScenario("@API")]
@@ -40,13 +42,13 @@ public sealed class Hooks
     [BeforeScenario("@download")]
     public void BeforeScenarioWithDownload()
     {
-        ConfigurationManager.SetDownloadFolder();
+        FileHelper.SetDownloadFolder();
     }
 
     [BeforeScenario]
     public void BeforeScenario()
     {
-        LogHelper.Log.Info($"{TestContext.CurrentContext.Test.MethodName} starts.");
+        LogHelper.Log.Info($"{TestInfoHelper.GetTestName()} starts.");
     }
 
     [AfterScenario("@UI")]
@@ -54,9 +56,7 @@ public sealed class Hooks
     {
         if (TestContext.CurrentContext.Result.Outcome.Status == TestStatus.Failed)
         {
-            var arguments = TestContext.CurrentContext.Test.Arguments;
-            var testName = TestContext.CurrentContext.Test.MethodName ?? "Unknown";
-            new ScreenshotMaker(driver).TakeBrowserScreenshot(testName, arguments);
+            new ScreenshotMaker(driver).TakeBrowserScreenshot();
         }
 
         driver?.Quit();
@@ -71,8 +71,7 @@ public sealed class Hooks
     [AfterScenario]
     public void AfterScenario()
     {
-        var testName = TestContext.CurrentContext.Test.MethodName ?? "Unknown";
         var outcome = TestContext.CurrentContext.Result.Outcome.Status;
-        LogHelper.Log.Info($"{testName} ends with outcome {outcome}.");
+        LogHelper.Log.Info($"{TestInfoHelper.GetTestName()} ends with outcome {outcome}.");
     }
 }

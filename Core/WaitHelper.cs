@@ -1,5 +1,4 @@
-﻿using System.Collections.ObjectModel;
-using OpenQA.Selenium;
+﻿using OpenQA.Selenium;
 using OpenQA.Selenium.Support.UI;
 using SeleniumExtras.WaitHelpers;
 
@@ -7,34 +6,27 @@ namespace Core;
 
 public class WaitHelper
 {
+    private readonly WebDriverWait wait;
+
     public WaitHelper(IWebDriver driver, TimeSpan timeout)
     {
         ArgumentOutOfRangeException.ThrowIfLessThanOrEqual(timeout, TimeSpan.Zero);
-        Wait = new WebDriverWait(driver, timeout);
-        Wait.IgnoreExceptionTypes(
+        wait = new WebDriverWait(driver, timeout);
+        wait.IgnoreExceptionTypes(
             typeof(ElementClickInterceptedException),
             typeof(ElementNotInteractableException),
             typeof(StaleElementReferenceException));
     }
 
-    public WebDriverWait Wait { get; init; }
+    public IWebElement WaitForElementToBeDispayed(By by) => wait.Until(ExpectedConditions.ElementIsVisible(by));
 
-    public IWebElement WaitForDisplayElement(By by) => Wait.Until(ExpectedConditions.ElementIsVisible(by));
+    public IWebElement WaitForElementToExist(By by) => wait.Until(ExpectedConditions.ElementExists(by));
 
     public void ClickOnElement(By by)
     {
-        Wait.Until(d =>
+        wait.Until(d =>
         {
             d.FindElement(by).Click();
-            return true;
-        });
-    }
-
-    public void ClickOnElement(Func<string, By> getBy, string text)
-    {
-        Wait.Until(d =>
-        {
-            d.FindElement(getBy(text)).Click();
             return true;
         });
     }
@@ -43,7 +35,7 @@ public class WaitHelper
     {
         try
         {
-            Wait.Until(d => d.FindElement(by));
+            wait.Until(d => d.FindElement(by));
             return true;
         }
         catch (WebDriverTimeoutException)
@@ -54,7 +46,7 @@ public class WaitHelper
 
     public bool AnyElementDisplayed(By by, Predicate<IWebElement> predicate)
     {
-        return Wait.Until(d =>
+        return wait.Until(d =>
         {
             var elements = d.FindElements(by);
             if (elements.Count > 0 && elements.Any(x => x.Displayed && predicate(x)))
@@ -68,8 +60,8 @@ public class WaitHelper
 
     public void WaitForDowloadedFile()
     {
-        string directory = ConfigurationManager.Test.DownloadDirectory;
-        Wait.Until(driver =>
+        string directory = ConfigurationManager.UI.DownloadDirectory;
+        wait.Until(driver =>
         {
             var files = Directory.GetFiles(directory);
             return files is not null && files.Length != 0 &&
@@ -77,5 +69,24 @@ public class WaitHelper
                 !files.Any(f => f.EndsWith(".part")) &&
                 !files.Any(f => f.EndsWith(".tmp"));
         });
+    }
+
+    public int CountOfDynamicList(By item, int initalCount)
+    {
+        wait.Until(d =>
+        {
+            var n = d.FindElements(item).Count;
+            if (n > initalCount)
+            {
+                initalCount = n;
+                return false;
+            }
+            else
+            {
+                return true;
+            }
+        });
+
+        return initalCount;
     }
 }

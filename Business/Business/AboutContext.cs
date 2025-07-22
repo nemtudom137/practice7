@@ -17,9 +17,11 @@ public class AboutContext : ContextBase
     {
         page.ScrollToElement(AboutPage.EpamAtAGlance);
         Log.Info("Scroll down to the EPAM at a Glance section.");
+
         page.Click(AboutPage.DownloadButton);
         Log.Info("Click on DOWNLOAD button.");
-        page.WaitForDownload();
+
+        page.WaitHelper.WaitForDowloadedFile();
         Log.Info("File downloaded.");
     }
 }

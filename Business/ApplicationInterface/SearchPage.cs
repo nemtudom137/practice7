@@ -1,6 +1,4 @@
-﻿using Core;
-using OpenQA.Selenium;
-using OpenQA.Selenium.Interactions;
+﻿using OpenQA.Selenium;
 
 namespace Business.ApplicationInterface;
 
@@ -16,20 +14,13 @@ public class SearchPage : PageBase
 
     public List<string> GetSearchResults()
     {
-        var action = new Actions(Driver);
-
         while (true)
         {
-            ScrollDownSearchResults(SearchResultItem);
+            ScrollDownDynamicElements(SearchResultItem);
+
             try
             {
-                var button = WaitHelper.Wait.Until(d => d.FindElement(ViewMoreButton));
-                action.ScrollToElement(button)
-                .Pause(TimeSpan.FromSeconds(1))
-                .MoveToElement(button)
-                .Click()
-                .Perform();
-
+                ClickOnDynamicElement(ViewMoreButton);
                 Log.Trace($"Element located by {ViewMoreButton} is clicked");
             }
             catch (ElementNotInteractableException)
@@ -39,41 +30,5 @@ public class SearchPage : PageBase
         }
 
         return Driver.FindElements(SearchResultItem).Select(x => x.Text).ToList();
-    }
-
-    private void ScrollDownSearchResults(By resultElement)
-    {
-        var action = new Actions(Driver);
-
-        int totalCount = 0;
-        int currentCount = 0;
-
-        do
-        {
-            totalCount = currentCount;
-
-            action.Pause(TimeSpan.FromSeconds(1))
-                .KeyDown(Keys.Control)
-                .SendKeys(Keys.End)
-                .KeyUp(Keys.Control)
-                .Perform();
-
-            Log.Trace($"Scroll to the bottom.");
-
-            WaitHelper.Wait.Until(d =>
-            {
-                var n = d.FindElements(resultElement).Count;
-                if (n > currentCount)
-                {
-                    currentCount = n;
-                    return false;
-                }
-                else
-                {
-                    return true;
-                }
-            });
-        }
-        while (totalCount > currentCount);
     }
 }

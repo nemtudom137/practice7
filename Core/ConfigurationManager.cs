@@ -1,54 +1,32 @@
 ﻿using Microsoft.Extensions.Configuration;
-using NLog;
 
 namespace Core;
 
 public static class ConfigurationManager
 {
-    private static readonly Logger Log = LogManager.GetCurrentClassLogger();
-    private static TestConfiguration? test;
+    private static readonly string UISection = "UI";
+    private static IConfigurationRoot config = GetConfiguration();
+    private static UiTestConfiguration? ui;
 
-    public static TestConfiguration Test
+    public static UiTestConfiguration UI
     {
         get
         {
-            test ??= GetConfiguration();
-            return test;
+            if (ui is null)
+            {
+                ui = config.GetSection(UISection).Get<UiTestConfiguration>();
+                LogHelper.Log.Info($"Config: {ui?.Url}, {ui?.Browser}, headless: {ui?.Headless}, timeout: {ui?.ExplicitTimeoutSec}, download: {ui?.DownloadDirectory}, screenshots: {ui?.ScreenshotDirectory}");
+            }
+
+            return ui ?? throw new ArgumentException(nameof(UI));
         }
     }
 
-    public static void SetDownloadFolder()
+    private static IConfigurationRoot GetConfiguration()
     {
-        var download = Test.DownloadDirectory;
-        if (Directory.Exists(download))
-        {
-            Directory.Delete(download, true);
-        }
-
-        Directory.CreateDirectory(download);
-    }
-
-    public static void SetScreenshotFolder()
-    {
-        var screenshots = Test.ScreenshotDirectory;
-
-        if (!Directory.Exists(screenshots))
-        {
-            Directory.CreateDirectory(screenshots);
-        }
-    }
-
-    private static TestConfiguration GetConfiguration()
-    {
-        var config = new ConfigurationBuilder()
+        return new ConfigurationBuilder()
            .SetBasePath(Directory.GetCurrentDirectory())
            .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
            .Build();
-
-        var testConfig = config.GetSection("Test").Get<TestConfiguration>();
-
-        Log.Info($"Config: {testConfig?.Url}, {testConfig?.Browser}, headless: {testConfig?.Headless}, timeout: {testConfig?.ExplicitTimeoutSec}, download: {testConfig?.DownloadDirectory}, screenshots: {testConfig?.ScreenshotDirectory}");
-
-        return testConfig ?? throw new ArgumentException(nameof(testConfig));
     }
 }

@@ -15,28 +15,26 @@ public class TestsBase
     [OneTimeSetUp]
     public void OneTimeSetUp()
     {
-        ConfigurationManager.SetScreenshotFolder();
+        FileHelper.SetScreenshotFolder();
     }
 
     [SetUp]
     public void Setup()
     {
         Driver = DriverCreator.CreateDriver();
-        ConfigurationManager.SetDownloadFolder();
-        Log.Info($"{TestContext.CurrentContext.Test.MethodName} starts.");
+        FileHelper.SetDownloadFolder();
+        Log.Info($"{TestInfoHelper.GetTestName()} starts.");
     }
 
     [TearDown]
     public void TearDown()
     {
-        var testName = TestContext.CurrentContext.Test.MethodName ?? "Unknown";
         var outcome = TestContext.CurrentContext.Result.Outcome.Status;
-        Log.Info($"{testName} ends with outcome {outcome}.");
+        Log.Info($"{TestInfoHelper.GetTestName()} ends with outcome {outcome}.");
 
         if (outcome == TestStatus.Failed)
         {
-            var arguments = TestContext.CurrentContext.Test.Arguments;
-            new ScreenshotMaker(Driver).TakeBrowserScreenshot(testName, arguments);
+            new ScreenshotMaker(Driver).TakeBrowserScreenshot();
         }
 
         Driver?.Quit();

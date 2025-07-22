@@ -9,7 +9,7 @@ public static class DriverCreator
 
     public static IWebDriver CreateDriver()
     {
-        var browser = ConfigurationManager.Test.Browser;
+        var browser = ConfigurationManager.UI.Browser;
         IDriverFactory factory = browser switch
         {
             BrowserType.Chrome => new ChromeFactory(),
@@ -18,7 +18,7 @@ public static class DriverCreator
             _ => throw new NotSupportedException("Not supported browser"),
         };
 
-        var driver = factory.CreateDriver(ConfigurationManager.Test.Headless, ConfigurationManager.Test.DownloadDirectory);
+        var driver = factory.CreateDriver(ConfigurationManager.UI.Headless, ConfigurationManager.UI.DownloadDirectory);
         Log.Info("Driver is created.");
         return driver;
     }

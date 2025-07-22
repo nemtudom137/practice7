@@ -6,7 +6,7 @@ public static class TestData
 
     public static readonly object[][] CarrierSearch =
    [
-       ["C", "All Locations", string.Empty],
+       ["C", "All Location", string.Empty],
         ["Java", "Colombia", "Bogota"]
    ];
 

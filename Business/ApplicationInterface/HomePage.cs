@@ -10,7 +10,11 @@ public class HomePage : PageBase
     internal HomePage(IWebDriver driver)
         : base(driver)
     {
-        Driver.Navigate().GoToUrl(ConfigurationManager.Test.Url);
-        Log.Trace($"Navigate to {ConfigurationManager.Test.Url}");
+    }
+
+    public void Open()
+    {
+        Driver.Navigate().GoToUrl(ConfigurationManager.UI.Url ?? throw new ArgumentException(nameof(ConfigurationManager.UI.Url)));
+        Log.Trace($"Navigate to {ConfigurationManager.UI.Url}");
     }
 }

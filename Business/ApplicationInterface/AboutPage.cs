@@ -11,10 +11,4 @@ public class AboutPage : PageBase
         : base(driver, TimeSpan.FromSeconds(10))
     {
     }
-
-    public void WaitForDownload()
-    {
-        Log.Trace("File download started.");
-        WaitHelper.WaitForDowloadedFile();
-    }
 }

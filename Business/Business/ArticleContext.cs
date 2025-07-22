@@ -13,5 +13,5 @@ public class ArticleContext : ContextBase
         page = new ArticlePage(Driver);
     }
 
-    public bool IsTitlePresent(string title) => page.IsTitlePresent(title);
+    public bool IsTitlePresent(string title) => page.IsTextPresentInElement(ArticlePage.Titles, title);
 }

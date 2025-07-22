@@ -16,14 +16,15 @@ public class InsightsContext : ContextBase
 
     public ArticleContext GoToSlidelArticle()
     {
-        page.ClickWithWait(page.TopmostCarousel.ActiveSlideContetnLink);
+        page.Click(page.TopmostCarousel.ActiveSlideContetnLink);
         Log.Info("Click Read More button on the slide.");
         return new ArticleContext(Driver);
     }
 
     public string GetTopmostCarouselTitle()
     {
-        var title = page.TopmostCarousel.GetActivArticleTitle();
+        var carousel = page.TopmostCarousel;
+        var title = page.GetElementText(carousel.ActiveSlideText);
         Log.Info($"Title on the active slide: {title}");
         return title;
     }

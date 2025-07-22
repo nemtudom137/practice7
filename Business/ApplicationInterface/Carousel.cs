@@ -23,7 +23,7 @@ public class Carousel : PageBase
     public void Swipe(int time)
     {
         ArgumentOutOfRangeException.ThrowIfNegative(time);
-        var arrow = WaitHelper.WaitForDisplayElement(RightArrow);
+        var arrow = WaitHelper.WaitForElementToBeDispayed(RightArrow);
         var action = new Actions(Driver).MoveToElement(arrow);
         for (int i = 0; i < time; i++)
         {
@@ -32,6 +32,4 @@ public class Carousel : PageBase
                 .Perform();
         }
     }
-
-    public string GetActivArticleTitle() => WaitHelper.WaitForDisplayElement(ActiveSlideText).Text;
 }

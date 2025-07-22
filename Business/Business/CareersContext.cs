@@ -22,14 +22,17 @@ public class CareersContext : ContextBase
 
     public CareersContext SetLocation(string location, string city)
     {
+        page.Click(CareersPage.LocationCombobox);
+
         if (string.IsNullOrEmpty(city))
         {
-            page.SetLocation(location);
+            page.Click(CareersPage.GetSingleLocation(location));
             Log.Info($"Location is set to {location}");
         }
         else
         {
-            page.SetLocation(location, city);
+            page.Click(CareersPage.GetLocationOptionGroup(location));
+            page.Click(CareersPage.GetSingleLocation(city));
             Log.Info($"Location is set to {location} - {city}");
         }
 
@@ -38,7 +41,7 @@ public class CareersContext : ContextBase
 
     public CareersContext ChooseRemote()
     {
-        page.ChooseRemote();
+        page.ChooseOption(CareersPage.RemoteOption);
         Log.Info($"Remote is chosen");
         return this;
     }

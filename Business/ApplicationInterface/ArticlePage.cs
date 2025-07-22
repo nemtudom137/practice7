@@ -1,19 +1,13 @@
-﻿using Core;
-using OpenQA.Selenium;
+﻿using OpenQA.Selenium;
 
 namespace Business.ApplicationInterface;
 
 public class ArticlePage : PageBase
 {
-    private static readonly By Titles = By.XPath($"//p[@class='scaling-of-text-wrapper']");
+    public static readonly By Titles = By.XPath($"//p[@class='scaling-of-text-wrapper']");
 
     internal ArticlePage(IWebDriver driver)
         : base(driver)
     {
-    }
-
-    public bool IsTitlePresent(string title)
-    {
-        return WaitHelper.AnyElementDisplayed(Titles, x => x.Text.Contains(title));
     }
 }

@@ -1,5 +1,4 @@
 ﻿using Business.ApplicationInterface;
-using Core;
 using OpenQA.Selenium;
 
 namespace Business.Business;
@@ -12,6 +11,7 @@ public class HomeContext : ContextBase
         : base(driver)
     {
         page = new HomePage(Driver);
+        page.Open();
     }
 
     public static HomeContext Open(IWebDriver? driver)
@@ -53,7 +53,7 @@ public class HomeContext : ContextBase
 
     private HomeContext AcceptCookies()
     {
-        page.ClickWithWait(HomePage.AcceptCookies);
+        page.Click(HomePage.AcceptCookies);
         Log.Info("Click on Accept Cookies button.");
         return this;
     }

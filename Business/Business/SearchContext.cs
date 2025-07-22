@@ -1,5 +1,4 @@
 ﻿using Business.ApplicationInterface;
-using Core;
 using OpenQA.Selenium;
 
 namespace Business.Business;

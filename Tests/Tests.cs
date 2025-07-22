@@ -42,7 +42,7 @@ public class Tests : TestsBase
     {
         HomeContext.Open(Driver).GoToAbout().DownloadCompanyOverview();
 
-        var downloadedFiles = Directory.GetFiles(ConfigurationManager.Test.DownloadDirectory);
+        var downloadedFiles = Directory.GetFiles(ConfigurationManager.UI.DownloadDirectory);
 
         using (Assert.EnterMultipleScope())
         {

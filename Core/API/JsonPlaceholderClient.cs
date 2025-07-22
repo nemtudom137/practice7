@@ -13,7 +13,7 @@ public class JsonPlaceholderClient : IApiClient
         var serializerOptions = new JsonSerializerOptions() { DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull };
 
         Client = new RestClient(
-            options: new RestClientOptions() { BaseUrl = new Uri(ConfigurationManager.API.Url) },
+            options: new RestClientOptions() { BaseUrl = new Uri(ConfigurationManager.API.Url ?? throw new ArgumentException(nameof(ConfigurationManager.API.Url))) },
             configureSerialization: s => s.UseSystemTextJson(serializerOptions));
     }
 

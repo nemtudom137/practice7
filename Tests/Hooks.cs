@@ -7,6 +7,8 @@ using NUnit.Framework.Interfaces;
 using OpenQA.Selenium;
 using TechTalk.SpecFlow;
 
+[assembly: Parallelizable(ParallelScope.Fixtures)]
+
 namespace Tests;
 
 [Binding]
@@ -27,7 +29,6 @@ public sealed class Hooks
         driver = DriverCreator.CreateDriver();
         objectContainer.RegisterInstanceAs(driver);
         FileHelper.SetScreenshotFolder();
-        LogHelper.Log.Info($"{TestContext.CurrentContext.Test.MethodName} starts.");
     }
 
     [BeforeScenario("@API")]
@@ -41,7 +42,7 @@ public sealed class Hooks
     [BeforeScenario("@download")]
     public void BeforeScenarioWithDownload()
     {
-        ConfigurationManager.SetDownloadFolder();
+        FileHelper.SetDownloadFolder();
     }
 
     [BeforeScenario]

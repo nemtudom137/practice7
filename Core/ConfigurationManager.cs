@@ -13,7 +13,7 @@ public static class ConfigurationManager
     private static UiTestConfiguration? ui;
     private static APITestConfiguration? api;
 
-    public static UITestConfiguration UI
+    public static UiTestConfiguration UI
     {
         get
         {
@@ -27,7 +27,7 @@ public static class ConfigurationManager
         }
     }
 
-    public static APITestConfiguration API
+    public static ApiTestConfiguration API
     {
         get
         {

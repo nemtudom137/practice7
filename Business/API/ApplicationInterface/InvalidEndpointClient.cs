@@ -21,5 +21,4 @@ public class InvalidEndpointClient : BaseClient
 
         return response;
     }
-
 }

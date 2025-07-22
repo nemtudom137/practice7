@@ -1,4 +1,5 @@
 ﻿using Business.UI.ApplicationInterface;
+using Core;
 using NLog;
 using NUnit.Framework;
 using OpenQA.Selenium;

@@ -5,8 +5,8 @@ namespace Business.API.ApplicationInterface;
 
 public class InvalidEndpointClient : BaseClient
 {
-    public InvalidEndpointClient(IRequestBuilder builder)
-        : base(builder)
+    public InvalidEndpointClient(IApiClient client, IRequestBuilder builder)
+        : base(client, builder)
     {
     }
 
@@ -21,4 +21,5 @@ public class InvalidEndpointClient : BaseClient
 
         return response;
     }
+
 }

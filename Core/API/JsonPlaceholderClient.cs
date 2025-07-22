@@ -1,5 +1,6 @@
 ﻿using System.Text.Json;
 using System.Text.Json.Serialization;
+using Core;
 using RestSharp;
 using RestSharp.Serializers.Json;
 
@@ -12,20 +13,15 @@ public class JsonPlaceholderClient : IApiClient
         var serializerOptions = new JsonSerializerOptions() { DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull };
 
         Client = new RestClient(
-            options: new RestClientOptions() { BaseUrl = new Uri(ConfigurationManager.API.Url ?? throw new ArgumentException(nameof(ConfigurationManager.API.Url))) },
+            options: new RestClientOptions() { BaseUrl = new Uri(ConfigurationManager.API.Url) },
             configureSerialization: s => s.UseSystemTextJson(serializerOptions));
     }
 
     public IRestClient Client { get; init; }
 
-    public void Dispose()
-    {
-        Dispose(true);
-        GC.SuppressFinalize(this);
-    }
-
-    protected virtual void Dispose(bool disposing)
+    void IDisposable.Dispose()
     {
         Client?.Dispose();
+        GC.SuppressFinalize(this);
     }
 }

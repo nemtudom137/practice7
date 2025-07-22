@@ -2,10 +2,10 @@
 using Core;
 using Core.API;
 using Core.UI;
+using Core.UI.DriverFactory;
 using NUnit.Framework.Interfaces;
+using OpenQA.Selenium;
 using TechTalk.SpecFlow;
-
-[assembly: Parallelizable(ParallelScope.Fixtures)]
 
 namespace Tests;
 
@@ -13,6 +13,8 @@ namespace Tests;
 public sealed class Hooks
 {
     private readonly IObjectContainer objectContainer;
+    private IWebDriver? driver;
+    private IApiClient? client;
 
     public Hooks(IObjectContainer objectContainer)
     {
@@ -22,27 +24,29 @@ public sealed class Hooks
     [BeforeScenario("UI")]
     public void BeforeUIScenario()
     {
-        DriverContainer.InitDriver();
-        FileHelper.SetScreenshotFolder();
+        driver = DriverCreator.CreateDriver();
+        objectContainer.RegisterInstanceAs(driver);
+        ConfigurationManager.SetScreenshotFolder();
     }
 
     [BeforeScenario("@API")]
     public void BeforeAPIScenario()
     {
-        ApiClientContainer.InitClient(new JsonPlaceholderClient());
+        client = new JsonPlaceholderClient();
+        objectContainer.RegisterInstanceAs(client);
         objectContainer.RegisterInstanceAs((IRequestBuilder)new RequestBuilder());
     }
 
     [BeforeScenario("@download")]
     public void BeforeScenarioWithDownload()
     {
-        FileHelper.SetDownloadFolder();
+        ConfigurationManager.SetDownloadFolder();
     }
 
     [BeforeScenario]
     public void BeforeScenario()
     {
-        LogHelper.Log.Info($"{TestInfoHelper.GetTestName()} starts.");
+        LogHelper.Log.Info($"{TestContext.CurrentContext.Test.MethodName} starts.");
     }
 
     [AfterScenario("@UI")]
@@ -50,22 +54,25 @@ public sealed class Hooks
     {
         if (TestContext.CurrentContext.Result.Outcome.Status == TestStatus.Failed)
         {
-            ScreenshotMaker.TakeBrowserScreenshot();
+            var arguments = TestContext.CurrentContext.Test.Arguments;
+            var testName = TestContext.CurrentContext.Test.MethodName ?? "Unknown";
+            new ScreenshotMaker(driver).TakeBrowserScreenshot(testName, arguments);
         }
 
-        DriverContainer.CloseDriver();
+        driver?.Quit();
     }
 
     [AfterScenario("@API")]
     public void AfterAPIScenario()
     {
-        ApiClientContainer.CloseClient();
+        client?.Dispose();
     }
 
     [AfterScenario]
     public void AfterScenario()
     {
+        var testName = TestContext.CurrentContext.Test.MethodName ?? "Unknown";
         var outcome = TestContext.CurrentContext.Result.Outcome.Status;
-        LogHelper.Log.Info($"{TestInfoHelper.GetTestName()} ends with outcome {outcome}.");
+        LogHelper.Log.Info($"{testName} ends with outcome {outcome}.");
     }
 }

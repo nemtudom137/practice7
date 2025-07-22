@@ -11,9 +11,9 @@ public class InsightsPageSteps
     private readonly InsightsPage page;
     private readonly ScenarioContext scenarioContext;
 
-    public InsightsPageSteps(ScenarioContext scenarioContext)
+    public InsightsPageSteps(IWebDriver driver, ScenarioContext scenarioContext)
     {
-        page = new InsightsPage();
+        page = new InsightsPage(driver);
         this.scenarioContext = scenarioContext;
     }
 

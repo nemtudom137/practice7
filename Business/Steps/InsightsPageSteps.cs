@@ -27,15 +27,17 @@ public class InsightsPageSteps
     [When(@"I note the name of the article")]
     public void WhenINoteTheNameOfTheArticle()
     {
-        var title = page.TopmostCarousel.GetActivArticleTitle();
+        var carousel = page.TopmostCarousel;
+        var title = page.GetElementText(carousel.ActiveSlideText);
         LogHelper.Log.Info($"Title on the active slide: {title}");
+
         scenarioContext.Set<string>(title, "slideTitle");
     }
 
     [When(@"I click on the Read More button")]
     public void WhenIClickOnTheReadMoreButton()
     {
-        page.ClickWithWait(page.TopmostCarousel.ActiveSlideContetnLink);
+        page.Click(page.TopmostCarousel.ActiveSlideContetnLink);
         LogHelper.Log.Info("Click Read More button on the slide.");
     }
 }

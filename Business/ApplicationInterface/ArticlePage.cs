@@ -11,7 +11,5 @@ public class ArticlePage : PageBase
     {
     }
 
-    public bool IsSectionPresent(string title) => WaitHelper.IsElementPresent(Section(title));
-
-    private static By Section(string title) => By.XPath($"//div[@class='section']//span[contains(text(),'{title}')]");
+    public static By Section(string title) => By.XPath($"//div[@class='section']//span[contains(text(),'{title}')]");
 }

@@ -31,19 +31,6 @@ public class WaitHelper
         });
     }
 
-    //public bool IsElementPresent(By by)
-    //{
-    //    try
-    //    {
-    //        wait.Until(d => d.FindElement(by));
-    //        return true;
-    //    }
-    //    catch (WebDriverTimeoutException)
-    //    {
-    //        return false;
-    //    }
-    //}
-
     public bool AnyElementDisplayed(By by, Predicate<IWebElement> predicate)
     {
         return wait.Until(d =>

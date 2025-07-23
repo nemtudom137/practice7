@@ -26,7 +26,7 @@ public class HomePageSteps
     [Given(@"I click on Accept Cookies button")]
     public void GivenIClickOnAcceptCookiesButton()
     {
-        page.ClickWithWait(HomePage.AcceptCookies);
+        page.Click(HomePage.AcceptCookies);
         LogHelper.Log.Info("Cookies are accepted");
     }
 
@@ -82,7 +82,7 @@ public class HomePageSteps
     [When(@"I click on the service category '(.*)'")]
     public void WhenIClickOnTheServiceCategory(string category)
     {
-        page.ClickWithWait(Header.DropdownMenuItem(category));
+        page.Click(Header.DropdownMenuItem(category));
         LogHelper.Log.Info($"Click on {category} service category.");
     }
 }

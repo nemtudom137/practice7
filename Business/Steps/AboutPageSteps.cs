@@ -34,10 +34,10 @@ public class AboutPageSteps
     [Then(@"A file named '(.*)' is downloaded")]
     public void ThenAFileNamedIsDownloaded(string fileName)
     {
-        page.WaitForDownload();
+        page.WaitForDowloadedFile();
         LogHelper.Log.Info("File downloaded.");
 
-        var downloadedFiles = Directory.GetFiles(ConfigurationManager.Test.DownloadDirectory);
+        var downloadedFiles = Directory.GetFiles(ConfigurationManager.UI.DownloadDirectory);
 
         using (Assert.EnterMultipleScope())
         {

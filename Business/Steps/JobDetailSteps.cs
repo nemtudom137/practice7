@@ -1,5 +1,4 @@
 ﻿using Business.ApplicationInterface;
-using NLog;
 using NUnit.Framework;
 using OpenQA.Selenium;
 using TechTalk.SpecFlow;
@@ -19,6 +18,6 @@ public class JobDetailSteps
     [Then(@"The '(.*)' is on the resulting page")]
     public void ThenTheIsOnTheResultingPage(string language)
     {
-        Assert.That(page.IsLanguagePresent(language), Is.True);
+        Assert.That(page.IsElementPresent(JobDetailPage.OccurancesOfLanguage(language)), Is.True);
     }
 }

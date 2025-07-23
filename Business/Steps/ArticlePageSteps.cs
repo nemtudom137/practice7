@@ -1,5 +1,4 @@
 ﻿using Business.ApplicationInterface;
-using NLog;
 using NUnit.Framework;
 using OpenQA.Selenium;
 using TechTalk.SpecFlow;
@@ -22,18 +21,18 @@ public class ArticlePageSteps
     public void ThenTheArticleTitleShouldBeTheOneNotedEarlier()
     {
         var slideTitle = scenarioContext.Get<string>("slideTitle");
-        Assert.That(page.IsTitlePresent(slideTitle), Is.True);
+        Assert.That(page.IsTextPresentInElement(ArticlePage.Titles, slideTitle), Is.True);
     }
 
     [Then(@"I should see the article about '(.*)'")]
     public void ThenIShouldSeeTheArticleAbout(string category)
     {
-        Assert.That(page.IsTitlePresent(category), Is.True);
+        Assert.That(page.IsTextPresentInElement(ArticlePage.Titles, category), Is.True);
     }
 
     [Then(@"The section '(.*)' is displayed on the page")]
     public void ThenTheSectionIsDisplayedOnThePage(string section)
     {
-        Assert.That(page.IsSectionPresent(section), Is.True);
+        Assert.That(page.IsElementPresent(ArticlePage.Section(section)), Is.True);
     }
 }

@@ -123,4 +123,6 @@ public abstract class PageBase
         new Actions(Driver).MoveToElement(element).Perform();
         LogHelper.Log.Trace($"Hovering over element located by {by}");
     }
+
+    public void WaitForDowloadedFile() => WaitHelper.WaitForDowloadedFile();
 }

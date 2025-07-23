@@ -26,22 +26,25 @@ public class CareersPageSteps
     [When(@"I set the location to '(.*)' '(.*)'")]
     public void WhenISetTheLocationTo(string location, string city)
     {
+        page.Click(CareersPage.LocationCombobox);
+
         if (string.IsNullOrEmpty(city))
         {
-            page.SetLocation(location);
+            page.Click(CareersPage.GetSingleLocation(location));
             LogHelper.Log.Info($"Location is set to {location}");
         }
         else
         {
-            page.SetLocation(location, city);
-            LogHelper.Log.Info($"Location is set to {location} and {city}");
+            page.Click(CareersPage.GetLocationOptionGroup(location));
+            page.Click(CareersPage.GetSingleLocation(city));
+            LogHelper.Log.Info($"Location is set to {location} - {city}");
         }
     }
 
     [When(@"I chose remote")]
     public void WhenIChoseRemote()
     {
-        page.ChooseRemote();
+        page.ChooseOption(CareersPage.RemoteOption);
         LogHelper.Log.Info($"Remote is chosen");
     }
 

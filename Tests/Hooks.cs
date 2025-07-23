@@ -23,27 +23,25 @@ public sealed class Hooks
     {
         driver = DriverCreator.CreateDriver();
         objectContainer.RegisterInstanceAs(driver);
-        ConfigurationManager.SetScreenshotFolder();
+        FileHelper.SetScreenshotFolder();
         LogHelper.Log.Info($"{TestContext.CurrentContext.Test.MethodName} starts.");
     }
 
     [BeforeScenario("@download")]
     public void BeforeScenarioWithDownload()
     {
-        ConfigurationManager.SetDownloadFolder();
+        FileHelper.SetDownloadFolder();
     }
 
     [AfterScenario]
     public void AfterScenario()
     {
-        var testName = TestContext.CurrentContext.Test.MethodName ?? "Unknown";
         var outcome = TestContext.CurrentContext.Result.Outcome.Status;
-        LogHelper.Log.Info($"{testName} ends with outcome {outcome}.");
+        LogHelper.Log.Info($"Test ends with outcome {outcome}.");
 
         if (outcome == TestStatus.Failed)
         {
-            var arguments = TestContext.CurrentContext.Test.Arguments;
-            new ScreenshotMaker(driver).TakeBrowserScreenshot(testName, arguments);
+            new ScreenshotMaker(driver).TakeBrowserScreenshot();
         }
 
         driver?.Quit();

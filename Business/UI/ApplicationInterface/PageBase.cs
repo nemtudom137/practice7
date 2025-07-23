@@ -1,4 +1,6 @@
 ﻿using Core;
+using Core.UI;
+using NLog;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Interactions;
 
@@ -104,7 +106,7 @@ public abstract class PageBase
             return true;
         }
         catch (WebDriverTimeoutException)
-        {
+    {
             return false;
         }
     }

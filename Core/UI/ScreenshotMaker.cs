@@ -6,7 +6,6 @@ namespace Core.UI;
 
 public class ScreenshotMaker
 {
-    private static readonly Logger Log = LogManager.GetCurrentClassLogger();
     private static readonly ImageFormat ImageFormat = ImageFormat.Png;
     private readonly IWebDriver driver;
 
@@ -24,11 +23,11 @@ public class ScreenshotMaker
 
             Screenshot screenshot = ((ITakesScreenshot)driver).GetScreenshot();
             screenshot.SaveAsFile(path);
-            Log.Info($"Screenshot saved: {path}");
+            LogHelper.Log.Info($"Screenshot saved: {path}");
         }
         catch (Exception ex)
         {
-            Log.Error($"Failed to take screenshot: {ex.Message}", ex);
+            LogHelper.Log.Error($"Failed to take screenshot: {ex.Message}", ex);
         }
     }
 }

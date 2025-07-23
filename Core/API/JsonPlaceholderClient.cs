@@ -1,6 +1,5 @@
 ﻿using System.Text.Json;
 using System.Text.Json.Serialization;
-using Core;
 using RestSharp;
 using RestSharp.Serializers.Json;
 
@@ -19,9 +18,14 @@ public class JsonPlaceholderClient : IApiClient
 
     public IRestClient Client { get; init; }
 
-    void IDisposable.Dispose()
+    public void Dispose()
+    {
+        Dispose(true);
+        GC.SuppressFinalize(this);
+    }
+
+    protected virtual void Dispose(bool disposing)
     {
         Client?.Dispose();
-        GC.SuppressFinalize(this);
     }
 }

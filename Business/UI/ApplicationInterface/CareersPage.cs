@@ -1,4 +1,6 @@
-﻿using OpenQA.Selenium;
+﻿using Core;
+using OpenQA.Selenium;
+using OpenQA.Selenium.Interactions;
 
 namespace Business.UI.ApplicationInterface;
 

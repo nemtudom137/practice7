@@ -1,4 +1,4 @@
-﻿namespace Core;
+﻿namespace Core.UI;
 
 public class UiTestConfiguration
 {

@@ -1,7 +1,6 @@
 ﻿using Core.API;
 using Core.UI;
 using Microsoft.Extensions.Configuration;
-using System;
 
 namespace Core;
 
@@ -11,7 +10,7 @@ public static class ConfigurationManager
     private static readonly string APISection = "API";
     private static IConfigurationRoot config = GetConfiguration();
     private static UiTestConfiguration? ui;
-    private static APITestConfiguration? api;
+    private static ApiTestConfiguration? api;
 
     public static UiTestConfiguration UI
     {
@@ -33,10 +32,10 @@ public static class ConfigurationManager
         {
             if (api is null)
             {
-                ui = config.GetSection(APISection).Get<UiTestConfiguration>();
+                api = config.GetSection(APISection).Get<ApiTestConfiguration>();
                 LogHelper.Log.Info($"Config: {api?.Url}");
             }
-            
+
             return api ?? throw new ArgumentException(nameof(API));
         }
     }

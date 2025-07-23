@@ -22,7 +22,7 @@ public class ArticlePageSteps
     [Then(@"The article title should be the one noted earlier")]
     public void ThenTheArticleTitleShouldBeTheOneNotedEarlier()
     {
-        var slideTitle = scenarioContext.Get<string>("slideTitle");
+        var slideTitle = scenarioContext.Get<string>(TestInfoHelper.GetTestName());
         Assert.That(page.IsTextPresentInElement(ArticlePage.Titles, slideTitle), Is.True);
     }
 

@@ -23,7 +23,7 @@ public sealed class Hooks
         this.objectContainer = objectContainer;
     }
 
-    [BeforeScenario("UI")]
+    [BeforeScenario("@UI")]
     public void BeforeUIScenario()
     {
         driver = DriverCreator.CreateDriver();

@@ -6,7 +6,7 @@ namespace Core.UI;
 
 public class ScreenshotMaker
 {
-    private static readonly ImageFormat ImageFormat = ImageFormat.Png;
+    private static readonly string ImageFormat = "png";
     private readonly IWebDriver driver;
 
     public ScreenshotMaker(IWebDriver? driver)

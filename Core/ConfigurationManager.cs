@@ -18,11 +18,17 @@ public static class ConfigurationManager
         {
             if (ui is null)
             {
-                ui = config.GetSection(UISection).Get<UiTestConfiguration>();
-                LogHelper.Log.Info($"Config: {ui?.Url}, {ui?.Browser}, headless: {ui?.Headless}, timeout: {ui?.ExplicitTimeoutSec}, download: {ui?.DownloadDirectory}, screenshots: {ui?.ScreenshotDirectory}");
+                ui = config.GetSection(UISection).Get<UiTestConfiguration>() ?? throw new ArgumentException(nameof(UI));
+                if (Enum.TryParse<BrowserType>(Environment.GetEnvironmentVariable("BROWSER"), out BrowserType browser))
+                {
+                    ui.Browser = browser;
+                    ui.Headless = true;
+                }
+
+                LogHelper.Log.Info($"Config: {ui.Url}, {ui.Browser}, headless: {ui.Headless}, timeout: {ui.ExplicitTimeoutSec}, download: {ui.DownloadDirectory}, screenshots: {ui.ScreenshotDirectory}");
             }
 
-            return ui ?? throw new ArgumentException(nameof(UI));
+            return ui;
         }
     }
 
@@ -32,11 +38,11 @@ public static class ConfigurationManager
         {
             if (api is null)
             {
-                api = config.GetSection(APISection).Get<ApiTestConfiguration>();
-                LogHelper.Log.Info($"Config: {api?.Url}");
+                api = config.GetSection(APISection).Get<ApiTestConfiguration>() ?? throw new ArgumentException(nameof(API));
+                LogHelper.Log.Info($"Config: {api.Url}");
             }
 
-            return api ?? throw new ArgumentException(nameof(API));
+            return api;
         }
     }
 

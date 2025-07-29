@@ -1,0 +1,35 @@
+name: Run tests
+
+on:
+
+  pull_request:
+    branches: [ "main" ]
+
+  schedule:
+    - cron: '0 0 * * 1'
+
+  workflow_dispatch:
+    inputs:
+      browser:
+        type: choice
+        description: Browser type
+        required: true
+        options:
+          - Chrome
+          - Firefox
+          - Edge
+
+jobs:
+  api-tests:
+    name: API Tests
+    uses: ./.github/workflows/steps.yml
+    with:
+      test-category: "API"
+
+  ui-tests:
+    name: UI Tests
+    needs: api-tests
+    uses: ./.github/workflows/steps.yml
+    with:
+      test-category: "UI"
+      browser: ${{ github.event.inputs.browser }}

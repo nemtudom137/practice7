@@ -1,0 +1,56 @@
+name : Callable steps
+on:
+  workflow_call:
+  
+    inputs:
+        test-category:
+            required: true
+            type: string
+        browser:
+            required: false
+            type: string
+
+jobs:
+  test:
+    name: Build, test, report
+    runs-on: windows-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: 8.0.x
+
+    - name: Restore dependencies
+      run: dotnet restore
+
+    - name: Build
+      run: dotnet build --no-restore
+
+    - name: Test
+      env:
+          BROWSER: ${{ inputs.browser }}
+          HEADLESS: true
+      run: dotnet test --no-build --verbosity normal --logger "trx;LogFileName=results.trx" --results-directory "./TestFiles" --filter "Category=${{ inputs.test-category }}" 
+      continue-on-error: true
+   
+    - name: Publish Test Report
+      uses: dorny/test-reporter@v2
+      if: always()
+      with:
+        name: ${{ inputs.test-category }} tests results
+        path: "./TestFiles/results.trx"
+        reporter: dotnet-trx
+
+    - name: Upload
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: Screenshots
+        path: "${{ github.workspace }}/Tests/bin/Debug/net8.0/TestFiles/Screenshot"
+        if-no-files-found:
+          ignore
+        retention-days: 15    

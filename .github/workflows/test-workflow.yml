@@ -3,7 +3,7 @@ name: Run tests
 on:
 
   pull_request:
-    branches: [ "practice7" ]
+    branches: [ "main" ]
 
   schedule:
     - cron: '0 0 * * 1'

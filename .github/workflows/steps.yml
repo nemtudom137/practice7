@@ -44,7 +44,7 @@ jobs:
         name: ${{ inputs.test-category }} tests results
         path: "./TestFiles/results.trx"
         reporter: dotnet-trx
-        continue-on-error: true
+      continue-on-error: true
 
     - name: Upload
       if: always()

@@ -23,7 +23,7 @@ public sealed class Hooks
         this.objectContainer = objectContainer;
     }
 
-    [BeforeScenario("@UI")]
+    [BeforeScenario("UI")]
     public void BeforeUIScenario()
     {
         driver = DriverCreator.CreateDriver();
@@ -31,7 +31,7 @@ public sealed class Hooks
         FileHelper.SetScreenshotFolder();
     }
 
-    [BeforeScenario("@API")]
+    [BeforeScenario("API")]
     public void BeforeAPIScenario()
     {
         client = new JsonPlaceholderClient();
@@ -39,7 +39,7 @@ public sealed class Hooks
         objectContainer.RegisterInstanceAs((IRequestBuilder)new RequestBuilder());
     }
 
-    [BeforeScenario("@download")]
+    [BeforeScenario("download")]
     public void BeforeScenarioWithDownload()
     {
         FileHelper.SetDownloadFolder();
@@ -51,7 +51,7 @@ public sealed class Hooks
         LogHelper.Log.Info($"Test starts.");
     }
 
-    [AfterScenario("@UI")]
+    [AfterScenario("UI")]
     public void AfterUIScenario()
     {
         if (TestContext.CurrentContext.Result.Outcome.Status == TestStatus.Failed)
@@ -62,7 +62,7 @@ public sealed class Hooks
         driver?.Quit();
     }
 
-    [AfterScenario("@API")]
+    [AfterScenario("API")]
     public void AfterAPIScenario()
     {
         client?.Dispose();

@@ -8,7 +8,7 @@ public static class ConfigurationManager
 {
     private static readonly string UISection = "UI";
     private static readonly string APISection = "API";
-    private static IConfigurationRoot config = GetConfiguration();
+    private static readonly IConfigurationRoot Config = GetConfiguration();
     private static UiTestConfiguration? ui;
     private static ApiTestConfiguration? api;
 
@@ -18,11 +18,15 @@ public static class ConfigurationManager
         {
             if (ui is null)
             {
-                ui = config.GetSection(UISection).Get<UiTestConfiguration>() ?? throw new ArgumentException(nameof(UI));
+                ui = Config.GetSection(UISection).Get<UiTestConfiguration>() ?? throw new ArgumentException(nameof(UI));
                 if (Enum.TryParse<BrowserType>(Environment.GetEnvironmentVariable("BROWSER"), out BrowserType browser))
                 {
                     ui.Browser = browser;
-                    ui.Headless = true;
+                }
+
+                if (bool.TryParse(Environment.GetEnvironmentVariable("HEADLESS"), out bool headless))
+                {
+                    ui.Headless = headless;
                 }
 
                 LogHelper.Log.Info($"Config: {ui.Url}, {ui.Browser}, headless: {ui.Headless}, timeout: {ui.ExplicitTimeoutSec}, download: {ui.DownloadDirectory}, screenshots: {ui.ScreenshotDirectory}");
@@ -38,7 +42,7 @@ public static class ConfigurationManager
         {
             if (api is null)
             {
-                api = config.GetSection(APISection).Get<ApiTestConfiguration>() ?? throw new ArgumentException(nameof(API));
+                api = Config.GetSection(APISection).Get<ApiTestConfiguration>() ?? throw new ArgumentException(nameof(API));
                 LogHelper.Log.Info($"Config: {api.Url}");
             }
 

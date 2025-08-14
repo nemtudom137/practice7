@@ -30,6 +30,7 @@ internal class ChromeFactory : IDriverFactory
             options.AddArgument("--no-sandbox");
             options.AddArgument("--disable-dev-shm-usage");
             options.AddArgument("disable-infobars");
+            options.AddArgument("--disable-blink-features=AutomationControlled");
             var agent = UserAgents[new Random().Next(UserAgents.Length)];
             options.AddArgument($"user-agent={agent}");
         }
@@ -38,6 +39,9 @@ internal class ChromeFactory : IDriverFactory
             options.AddArgument("--start-maximized");
         }
 
-        return new ChromeDriver(options);
+        IWebDriver driver = new ChromeDriver(options);
+        ((IJavaScriptExecutor)driver).ExecuteScript("Object.defineProperty(navigator, 'webdriver', {get: () => undefined})");
+
+        return driver;
     }
 }

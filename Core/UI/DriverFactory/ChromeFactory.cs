@@ -1,5 +1,9 @@
 ﻿using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
+using OpenQA.Selenium.DevTools;
+using OpenQA.Selenium.DevTools.V138.Page;
+using Network = OpenQA.Selenium.DevTools.V138.Network;
+using DevToolsSessionDomains = OpenQA.Selenium.DevTools.V138.DevToolsSessionDomains;
 
 namespace Core.UI.DriverFactory;
 
@@ -40,8 +44,15 @@ internal class ChromeFactory : IDriverFactory
         }
 
         IWebDriver driver = new ChromeDriver(options);
-        ((IJavaScriptExecutor)driver).ExecuteScript("Object.defineProperty(navigator, 'webdriver', {get: () => undefined})");
-        Thread.Sleep(1000);
+        IDevTools devTools = driver as IDevTools;
+        DevToolsSession session = devTools.GetDevToolsSession();
+        var domains = session.GetVersionSpecificDomains<DevToolsSessionDomains>();
+        domains.Page.Enable(new OpenQA.Selenium.DevTools.V138.Page.EnableCommandSettings());
+        domains.Page.AddScriptToEvaluateOnNewDocument(new AddScriptToEvaluateOnNewDocumentCommandSettings()
+        {
+            Source = "\"Page.removeScriptToEvaluateOnNewDocument\", {\"identifier\":\"1\"}",
+        });
+
         return driver;
     }
 }

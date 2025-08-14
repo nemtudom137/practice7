@@ -1,9 +1,5 @@
 ﻿using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
-using OpenQA.Selenium.DevTools;
-using OpenQA.Selenium.DevTools.V138.Page;
-using Network = OpenQA.Selenium.DevTools.V138.Network;
-using DevToolsSessionDomains = OpenQA.Selenium.DevTools.V138.DevToolsSessionDomains;
 
 namespace Core.UI.DriverFactory;
 
@@ -44,23 +40,8 @@ internal class ChromeFactory : IDriverFactory
         }
 
         IWebDriver driver = new ChromeDriver(options);
-        IDevTools devTools = driver as IDevTools;
-        DevToolsSession session = devTools.GetDevToolsSession();
-        var domains = session.GetVersionSpecificDomains<DevToolsSessionDomains>();
-        domains.Page.Enable(new OpenQA.Selenium.DevTools.V138.Page.EnableCommandSettings());
-        domains.Page.AddScriptToEvaluateOnNewDocument(new AddScriptToEvaluateOnNewDocumentCommandSettings()
-        {
-            Source = "Object.defineProperty(navigator, 'webdriver', { get: () => undefined })"
-        });
-
-
-        domains.Page.AddScriptToEvaluateOnNewDocument(new AddScriptToEvaluateOnNewDocumentCommandSettings()
-        {
-            Source = "Object.defineProperty(Page.addScriptToEvaluateOnNewDocument, {source: const newProto = navigator.__proto__; delete newProto.webdriver; navigator.__proto__ = newProto;})"
-        });
-
-        //((IJavaScriptExecutor)driver).ExecuteScript("Object.defineProperty(navigator, 'webdriver', {get: () => undefined})");
-
+        ((IJavaScriptExecutor)driver).ExecuteScript("Object.defineProperty(navigator, 'webdriver', {get: () => undefined})");
+        Thread.Sleep(1000);
         return driver;
     }
 }

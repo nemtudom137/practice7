@@ -34,6 +34,7 @@ internal class ChromeFactory : IDriverFactory
             options.AddArgument("--no-sandbox");
             options.AddArgument("--disable-dev-shm-usage");
             options.AddArgument("disable-infobars");
+            options.AddArgument("--incognito");
             options.AddArgument("--disable-blink-features=AutomationControlled");
             var agent = UserAgents[new Random().Next(UserAgents.Length)];
             options.AddArgument($"user-agent={agent}");
@@ -43,16 +44,6 @@ internal class ChromeFactory : IDriverFactory
         {
             options.AddArgument("--start-maximized");
         }
-
-        IWebDriver driver = new ChromeDriver(options);
-        IDevTools devTools = driver as IDevTools;
-        DevToolsSession session = devTools.GetDevToolsSession();
-        var domains = session.GetVersionSpecificDomains<DevToolsSessionDomains>();
-        domains.Page.Enable(new OpenQA.Selenium.DevTools.V138.Page.EnableCommandSettings());
-        domains.Page.AddScriptToEvaluateOnNewDocument(new AddScriptToEvaluateOnNewDocumentCommandSettings()
-        {
-            Source = "\"Page.removeScriptToEvaluateOnNewDocument\", {\"identifier\":\"1\"}",
-        });
 
         return new ChromeDriver(options);
     }

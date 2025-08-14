@@ -53,7 +53,12 @@ internal class ChromeFactory : IDriverFactory
             Source = "Object.defineProperty(navigator, 'webdriver', { get: () => undefined })"
         });
 
-       
+
+        domains.Page.AddScriptToEvaluateOnNewDocument(new AddScriptToEvaluateOnNewDocumentCommandSettings()
+        {
+            Source = "Object.defineProperty(Page.addScriptToEvaluateOnNewDocument, {source: const newProto = navigator.__proto__; delete newProto.webdriver; navigator.__proto__ = newProto;})"
+        });
+
         //((IJavaScriptExecutor)driver).ExecuteScript("Object.defineProperty(navigator, 'webdriver', {get: () => undefined})");
 
         return driver;

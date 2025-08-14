@@ -37,6 +37,7 @@ internal class ChromeFactory : IDriverFactory
             options.AddArgument("--disable-blink-features=AutomationControlled");
             var agent = UserAgents[new Random().Next(UserAgents.Length)];
             options.AddArgument($"user-agent={agent}");
+            options.AddExcludedArguments(new List<string>() { "enable-automation" });
         }
         else
         {
@@ -53,6 +54,6 @@ internal class ChromeFactory : IDriverFactory
             Source = "\"Page.removeScriptToEvaluateOnNewDocument\", {\"identifier\":\"1\"}",
         });
 
-        return driver;
+        return new ChromeDriver(options);
     }
 }

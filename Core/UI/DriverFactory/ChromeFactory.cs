@@ -34,8 +34,9 @@ internal class ChromeFactory : IDriverFactory
             options.AddArgument("--no-sandbox");
             options.AddArgument("--disable-dev-shm-usage");
             options.AddArgument("disable-infobars");
-            options.AddArgument("--incognito");
             options.AddArgument("--disable-blink-features=AutomationControlled");
+            options.AddExcludedArgument("enable-automation");
+            options.AddAdditionalOption("useAutomationExtension", false);
             var agent = UserAgents[new Random().Next(UserAgents.Length)];
             options.AddArgument($"user-agent={agent}");
             options.AddExcludedArguments(new List<string>() { "enable-automation" });

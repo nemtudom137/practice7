@@ -15,6 +15,9 @@ internal class ChromeFactory : IDriverFactory
             options.AddArguments(new List<string>()
             {
                 "--headless=new",
+                "--window-size=1920,1080",
+                "user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+                "--disable-blink-features=AutomationControlled",
                 "--disable-gpu",
                 "--no-sandbox",
                 "--disable-dev-shm-usage",
@@ -22,47 +25,49 @@ internal class ChromeFactory : IDriverFactory
                 "--disable-features=VizDisplayCompositor",
                 "--disable-notifications",
                 "--disable-popup-blocking",
-                "--window-size=1920,1080",
                 "--disable-infobars",
-                "--disable-blink-features=AutomationControlled",
-                "user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+                "--disable-logging",
+                "--disable-dev-tools",
+                "--no-first-run",
+                "--no-default-browser-check",
+                "--disable-background-timer-throttling",
+                "--disable-backgrounding-occluded-windows",
+                "--disable-renderer-backgrounding",
+                "--disable-features=TranslateUI",
+                "--disable-ipc-flooding-protection",
+                "--password-store=basic",
+                "--use-mock-keychain",
+                "--disable-client-side-phishing-detection",
+                "--disable-sync",
+                "--disable-features=UserAgentClientHint",
+                "--disable-blink-features",
+                "--disable-component-extensions-with-background-pages",
             });
 
             options.AddExcludedArgument("enable-automation");
             options.AddAdditionalOption("useAutomationExtension", false);
+            options.AddUserProfilePreference("prefs", new Dictionary<string, object>
+                {
+                    ["credentials_enable_service"] = false,
+                    ["profile.password_manager_enabled"] = false,
+                });
 
             ChromeDriverService service = ChromeDriverService.CreateDefaultService();
             service.HideCommandPromptWindow = true;
 
             IWebDriver driver = new ChromeDriver(service, options);
             IJavaScriptExecutor js = (IJavaScriptExecutor)driver;
+
             js.ExecuteScript("Object.defineProperty(navigator, 'webdriver', {get: () => undefined})");
-
-            string script = @"
-                    // Overwrite the navigator.plugins property
-                    Object.defineProperty(navigator, 'plugins', {
-                        get: () => [1, 2, 3, 4, 5]
-                    });
-                    
-                    // Overwrite the navigator.languages property
-                    Object.defineProperty(navigator, 'languages', {
-                        get: () => ['en-US', 'en']
-                    });
-                    
-                    // Overwrite the WebGL vendor and renderer
-                    const getParameter = WebGLRenderingContext.prototype.getParameter;
-                    WebGLRenderingContext.prototype.getParameter = function(parameter) {
-                        if (parameter === 37445) {
-                            return 'Intel Inc.';
-                        }
-                        if (parameter === 37446) {
-                            return 'Intel Iris OpenGL Engine';
-                        }
-                        return getParameter(parameter);
-                    };
-                ";
-
-            js.ExecuteScript(script);
+            js.ExecuteScript("window.chrome = { runtime: {} }");
+            js.ExecuteScript(@"
+                const originalQuery = window.navigator.permissions.query;
+                window.navigator.permissions.query = (parameters) => (
+                    parameters.name === 'notifications' ?
+                        Promise.resolve({ state: Notification.permission }) :
+                        originalQuery(parameters)
+                );
+            ");
 
             return driver;
         }

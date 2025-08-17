@@ -1,6 +1,4 @@
-﻿using System.Drawing.Imaging;
-using NLog;
-using OpenQA.Selenium;
+﻿using OpenQA.Selenium;
 
 namespace Core.UI;
 
